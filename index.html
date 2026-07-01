@@ -995,9 +995,28 @@ function renderSettingsCats(div,m){
     const inp=div.querySelector(`.cat-name-inp[data-cid="${cid}"]`);
     const newLabel=inp?.value.trim();if(!newLabel){alert('ชื่อหมวดหมู่ต้องไม่ว่าง');return;}
     const cat=categories.find(c=>c.id===cid);if(!cat)return;
+    // ตรวจสอบชื่อซ้ำกับหมวดหมู่อื่น
+    const conflict=categories.find(c=>c.id!==cid&&c.label.trim()===newLabel);
+    if(conflict){
+      const pCount=products.filter(p=>p.category===cid).length;
+      const tCount=products.filter(p=>p.category===conflict.id).length;
+      if(!confirm(
+        `ชื่อ "${newLabel}" ซ้ำกับหมวด "${conflict.label}" (${conflict.id})\n\n` +
+        `• หมวดนี้ (${cid}) มีสินค้า ${pCount} รายการ\n` +
+        `• หมวดปลายทาง (${conflict.id}) มีสินค้า ${tCount} รายการ\n\n` +
+        `ต้องการรวมหมวดหมู่ทั้งสองเข้าด้วยกัน?\n` +
+        `(สินค้าทั้ง ${pCount} รายการจะย้ายไปอยู่ใน "${conflict.label}")`
+      ))return;
+      showSpinner();
+      const{data:res,error}=await sb.rpc('merge_categories',{source_id:cid,target_id:conflict.id});
+      hideSpinner();
+      if(error){showToast('รวมหมวดหมู่ไม่สำเร็จ: '+error.message,'error');return;}
+      showToast(`รวมหมวดหมู่แล้ว ย้ายสินค้า ${res?.moved||0} รายการ`);
+      await loadAll();renderSettingsCats(div,m);return;
+    }
     showSpinner();const{error}=await sb.from('categories').update({label:newLabel}).eq('id',cid);hideSpinner();
     if(error){showToast('บันทึกไม่สำเร็จ: '+error.message,'error');return;}
-    cat.label=newLabel;showToast('บันทึกชื่อหมวดหมู่แล้ว');
+    cat.label=newLabel;showToast('บันทึกชื่อหมวดหมู่แล้ว');renderSettingsCats(div,m);
   });
   div.querySelectorAll('[data-catdel]').forEach(b=>b.onclick=async()=>{
     const id=b.dataset.catdel;const cnt=products.filter(p=>p.category===id).length;
