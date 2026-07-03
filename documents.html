@@ -474,10 +474,9 @@ function loadSeller(){try{const s=localStorage.getItem('topg_seller');if(s)selle
 
 function defaultNum(){const n={};Object.keys(DOC_TYPES).forEach(k=>{n[k]={prefix:k.toUpperCase(),next:1,pad:4};});return n;}
 function numPreview(type){
-  // ใช้เฉพาะใน settings (แสดงตัวอย่าง) — ไม่ใส่ในช่องเลขที่เอกสาร
   const n=numbering[type]||defaultNum()[type];
   const yr=new Date().getFullYear()+543;
-  return`${n.prefix}-${yr}-${'0'.repeat(n.pad-1)}1`;
+  return`${n.prefix}-${yr}-${String(n.next||1).padStart(n.pad,'0')}`;
 }
 
 /* ── Supabase helpers ───────────────────────── */
