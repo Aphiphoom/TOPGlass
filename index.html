@@ -184,7 +184,7 @@ tr:hover td{background:#f8fafc;}
       <button data-tab="settings">ตั้งค่า</button>
     </nav>
     <div class="nav-wrap">
-      <a href="documents.html" target="_blank" class="logout-btn" style="text-decoration:none;background:rgba(255,255,255,.15);">📄 เอกสาร</a>
+      <a href="documents.html" class="logout-btn" style="text-decoration:none;background:rgba(255,255,255,.15);">📄 เอกสาร</a>
       <span class="user-badge" id="userBadge"></span>
       <button class="logout-btn" id="logoutBtn">ออกระบบ</button>
       <span class="status-dot" id="dbDot"></span>
@@ -573,6 +573,37 @@ async function confirmSale(){
       }
     }
     sale.items=items; sales.unshift({...sale,items});
+
+    // ── สร้างใบเสร็จรับเงินอัตโนมัติใน documents ──
+    try{
+      const{data:rcpNum}=await sb.rpc('get_next_doc_number',{p_type:'r'});
+      if(rcpNum){
+        const rcpPayload={
+          doc_type:'r', doc_number:rcpNum,
+          buyer_name:cust?.name||'ลูกค้าทั่วไป',
+          doc_date:new Date().toISOString().slice(0,10),
+          grand_total:t.total,
+          ref_number:'POS#'+now8(sale.id),
+          data:{
+            buyerName:cust?.name||'ลูกค้าทั่วไป',
+            buyerAddr:cust?.address||'',
+            buyerContact:cust?.phone||'',
+            buyerBranch:'',buyerTaxId:'',
+            docDate:new Date().toISOString().slice(0,10),
+            docRef:'บิล POS #'+now8(sale.id),
+            docValid:'',
+            rcpMethod:payMethod==='cash'?'เงินสด':'เครดิต/ลงบิล',
+            rcpRef:'',discType:'amount',
+            discValue:String(t.discVal),
+            vatRate:'0',vatMode:'none',copyTag:'ต้นฉบับ',
+            docNote:payMethod==='credit'&&debtToAdd>0?`ค้างชำระ ฿${money(debtToAdd)}`:'',
+            items:cart.map(it=>({qty:String(it.qty),unit:it.unit,detail:it.product_name,price:String(it.price)})),
+          }
+        };
+        await sb.from('documents').insert(rcpPayload);
+      }
+    }catch(re){console.warn('Auto-receipt:',re.message);}
+
     cart=[];discAmt=0;paidStr='';payMethod='cash';
     hideSpinner();render();showReceipt(sale,items);
   }catch(e){hideSpinner();showToast('ผิดพลาด: '+e.message,'error');}
