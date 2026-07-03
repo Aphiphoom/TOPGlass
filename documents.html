@@ -78,6 +78,7 @@ body{background:var(--bg);color:var(--text);font-size:14px;-webkit-print-color-a
 .item-num{position:absolute;top:-8px;left:-7px;width:21px;height:21px;border-radius:50%;
   background:var(--primary);color:#fff;font-size:10.5px;font-weight:700;display:grid;place-items:center}
 .item-grid{display:grid;grid-template-columns:78px 60px 1fr 34px;gap:7px;align-items:end}
+.item-grid-row2{display:grid;grid-template-columns:1fr 1fr 1fr 34px;gap:7px;align-items:end}
 .icon-btn{border:1px solid var(--border);background:var(--card);border-radius:6px;height:33px;
   cursor:pointer;color:var(--red);font-size:15px;display:grid;place-items:center}
 .icon-btn:hover{background:#fff0f0}
@@ -264,7 +265,7 @@ table.items tr.grow td{border-top:none}
     <div class="card">
       <h3>รายละเอียดเอกสาร</h3>
       <div class="grid g2">
-        <div class="fld"><label>เลขที่เอกสาร</label><input id="docNumber" readonly style="background:var(--panel-2);color:var(--brand-deep);font-weight:700"></div>
+        <div class="fld"><label>เลขที่เอกสาร</label><input id="docNumber" readonly placeholder="ออกอัตโนมัติเมื่อบันทึก" style="background:var(--bg);color:var(--primary-dark);font-weight:700"></div>
         <div class="fld"><label>วันที่</label><input type="date" id="docDate"></div>
       </div>
       <div class="grid g2" style="margin-top:9px">
@@ -470,9 +471,10 @@ function loadSeller(){try{const s=localStorage.getItem('topg_seller');if(s)selle
 
 function defaultNum(){const n={};Object.keys(DOC_TYPES).forEach(k=>{n[k]={prefix:k.toUpperCase(),next:1,pad:4};});return n;}
 function numPreview(type){
+  // ใช้เฉพาะใน settings (แสดงตัวอย่าง) — ไม่ใส่ในช่องเลขที่เอกสาร
   const n=numbering[type]||defaultNum()[type];
   const yr=new Date().getFullYear()+543;
-  return`${n.prefix}-${yr}-${'0'.repeat(n.pad-1)}?`;
+  return`${n.prefix}-${yr}-${'0'.repeat(n.pad-1)}1`;
 }
 
 /* ── Supabase helpers ───────────────────────── */
@@ -593,18 +595,19 @@ function renderItems(){
   div.innerHTML=items.map((it,i)=>`
   <div class="item-card" data-i="${i}">
     <span class="item-num">${i+1}</span>
-    <div class="item-grid">
+    <div class="fld" style="margin-bottom:7px">
+      <label>รายละเอียดสินค้า / บริการ</label>
+      <div class="ac-wrap">
+        <input class="it-detail ac-input" autocomplete="off" value="${it.detail||''}" placeholder="ชื่อสินค้า / บริการ">
+        <div class="ac-list"></div>
+      </div>
+    </div>
+    <div class="item-grid-row2">
       <div class="fld"><label>จำนวน</label><input class="it-qty" type="number" step="0.01" value="${it.qty||''}"></div>
       <div class="fld"><label>หน่วย</label><input class="it-unit" value="${it.unit||''}"></div>
-      <div class="fld"><label>รายละเอียด</label>
-        <div class="ac-wrap">
-          <input class="it-detail ac-input" autocomplete="off" value="${it.detail||''}" placeholder="ชื่อสินค้า / บริการ">
-          <div class="ac-list"></div>
-        </div>
-      </div>
+      <div class="fld"><label>ราคาต่อหน่วย (บาท)</label><input class="it-price" type="number" step="0.01" value="${it.price||''}"></div>
       <button class="icon-btn" data-rm="${i}">✕</button>
     </div>
-    <div class="fld" style="margin-top:7px"><label>ราคาต่อหน่วย</label><input class="it-price" type="number" step="0.01" value="${it.price||''}"></div>
   </div>`).join('');
   div.querySelectorAll('.it-qty').forEach((el,i)=>{el.oninput=()=>{items[i].qty=el.value;render();}});
   div.querySelectorAll('.it-unit').forEach((el,i)=>{el.oninput=()=>{items[i].unit=el.value;render();}});
@@ -652,7 +655,8 @@ function setupCustAc(){
 /* ── A4 Render ──────────────────────────────── */
 function render(){
   const t=calcTotals(),dt=DOC_TYPES[docType];
-  const docNum=$('docNumber')?.value||'—';
+  const _rawNum=$('docNumber')?.value||'';
+  const docNum=(_rawNum&&!_rawNum.includes('?'))?_rawNum:'(ออกเลขอัตโนมัติเมื่อบันทึก)';
   const docDate=$('docDate')?.value||todayISO();
   const buyerName=$('buyerName')?.value||'';
   const buyerBranch=$('buyerBranch')?.value||'';
@@ -758,8 +762,7 @@ function setDocType(type){
   docType=type;const dt=DOC_TYPES[type];
   $('copyWrap').style.display=dt.hasCopy?'':'none';
   $('receiptCard').style.display=dt.hasRcp?'':'none';
-  if(!$('docNumber').value||$('docNumber').value.includes('?'))
-    $('docNumber').value=numPreview(type);
+  // เลขที่ออกอัตโนมัติเมื่อบันทึก — ไม่ต้อง pre-fill
   render();
 }
 
@@ -818,7 +821,7 @@ function newDoc(confirm_=true){
   currentHistId=null;items=[{qty:'1',unit:'',detail:'',price:''}];
   $('buyerName').value='';$('buyerBranch').value='';$('buyerAddr').value='';
   $('buyerTaxId').value='';$('buyerContact').value='';
-  $('docNumber').value=numPreview(docType);
+  $('docNumber').value='';
   $('docDate').value=todayISO();$('docRef').value='';$('docValid').value='30';$('docNote').value='';
   $('discValue').value='';$('vatRate').value='7';$('vatMode').value='exclude';
   document.querySelectorAll('[data-copy]').forEach(c=>c.classList.toggle('on',c.dataset.copy==='ต้นฉบับ'));
@@ -838,7 +841,7 @@ function openConvert(id){
   $('convBody').querySelectorAll('[data-ctype]').forEach(b=>b.onclick=()=>{
     const type=b.dataset.ctype;loadFromHistory(entry);
     docType=type;buildDocTypeSelect();$('docType').value=type;
-    currentHistId=null;$('docNumber').value=numPreview(type);
+    currentHistId=null;$('docNumber').value='';
     $('docRef').value=entry.doc_number;setDocType(type);render();closeModal('convOverlay');
   });
   closeModal('histOverlay');openModal('convOverlay');
