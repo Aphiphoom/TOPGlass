@@ -265,7 +265,13 @@ table.items tr.grow td{border-top:none}
     <div class="card">
       <h3>รายละเอียดเอกสาร</h3>
       <div class="grid g2">
-        <div class="fld"><label>เลขที่เอกสาร</label><input id="docNumber" readonly placeholder="ออกอัตโนมัติเมื่อบันทึก" style="background:var(--bg);color:var(--primary-dark);font-weight:700"></div>
+        <div class="fld">
+          <label>เลขที่เอกสาร</label>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input id="docNumber" placeholder="พิมพ์เองหรือกดออกอัตโนมัติ" style="flex:1;font-weight:600;color:var(--primary-dark)">
+            <button id="btnGenNum" title="ออกเลขอัตโนมัติ" style="flex:none;background:var(--primary);color:#fff;border:none;border-radius:6px;padding:7px 10px;cursor:pointer;font-size:13px;white-space:nowrap;font-family:inherit;font-weight:600">🎲 ออกเลข</button>
+          </div>
+        </div>
         <div class="fld"><label>วันที่</label><input type="date" id="docDate"></div>
       </div>
       <div class="grid g2" style="margin-top:9px">
@@ -531,7 +537,7 @@ async function saveDoc(andPrint=false){
     const t=calcTotals();
     const isNew=!currentHistId;
     let docNum=$('docNumber').value;
-    if(isNew||!docNum||docNum.includes('?')){
+    if(isNew||!docNum){
       docNum=await getNextNumber(docType);
       $('docNumber').value=docNum;
     }
@@ -655,8 +661,8 @@ function setupCustAc(){
 /* ── A4 Render ──────────────────────────────── */
 function render(){
   const t=calcTotals(),dt=DOC_TYPES[docType];
-  const _rawNum=$('docNumber')?.value||'';
-  const docNum=(_rawNum&&!_rawNum.includes('?'))?_rawNum:'(ออกเลขอัตโนมัติเมื่อบันทึก)';
+  const _rawNum=($('docNumber')?.value||'').trim();
+  const docNum=_rawNum||'(กรอกหรือกด 🎲 ออกเลข)';
   const docDate=$('docDate')?.value||todayISO();
   const buyerName=$('buyerName')?.value||'';
   const buyerBranch=$('buyerBranch')?.value||'';
@@ -974,6 +980,17 @@ async function init(){
     };
   });
 
+  // ปุ่มออกเลขอัตโนมัติ
+  $('btnGenNum').onclick=async()=>{
+    $('btnGenNum').disabled=true;$('btnGenNum').textContent='⏳';
+    try{
+      const num=await getNextNumber(docType);
+      $('docNumber').value=num;render();
+    }catch(e){toast('ออกเลขไม่สำเร็จ: '+e.message,3000);}
+    finally{$('btnGenNum').disabled=false;$('btnGenNum').textContent='🎲 ออกเลข';}
+  };
+  // live render เมื่อพิมพ์เลขเอง
+  $('docNumber').oninput=render;
   setupCustAc();
   updateHistCount();applyZoom();
   setDocType('q');newDoc(false);renderItems();
