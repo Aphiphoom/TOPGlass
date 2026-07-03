@@ -491,6 +491,9 @@ async function loadNumberingFromDB(){
   window._sbNumbering.forEach(row=>{
     numbering[row.doc_type]={prefix:row.prefix,next:row.next_num,pad:row.pad};
   });
+  // อัปเดต placeholder หลังโหลดเลขจาก DB
+  const numEl=$('docNumber');
+  if(numEl&&!numEl.value)numEl.placeholder=numPreview(docType)||'พิมพ์เองหรือกด 🎲 ออกเลข';
 }
 
 async function saveNumberingToDB(){
@@ -662,7 +665,8 @@ function setupCustAc(){
 function render(){
   const t=calcTotals(),dt=DOC_TYPES[docType];
   const _rawNum=($('docNumber')?.value||'').trim();
-  const docNum=_rawNum||'(กรอกหรือกด 🎲 ออกเลข)';
+  const docNum=_rawNum||numPreview(docType);
+  const docNumIsPreview=!_rawNum;
   const docDate=$('docDate')?.value||todayISO();
   const buyerName=$('buyerName')?.value||'';
   const buyerBranch=$('buyerBranch')?.value||'';
@@ -713,7 +717,7 @@ function render(){
       ${buyerContact?`<div><span class="lbl">โทร / ผู้ติดต่อ</span><span>${esc(buyerContact)}</span></div>`:''}
     </div>
     <div class="docinfo">
-      <div class="di-row"><span class="k">เลขที่</span><span class="v">${esc(docNum)}</span></div>
+      <div class="di-row"><span class="k">เลขที่</span><span class="v" style="${docNumIsPreview?'color:#94a3b8;font-style:italic;':''}">${esc(docNum)}${docNumIsPreview?' *':''}</span></div>
       <div class="di-row"><span class="k">วันที่</span><span class="v">${fmtDate(docDate)}</span></div>
       ${docRef?`<div class="di-row"><span class="k">อ้างอิง</span><span class="v">${esc(docRef)}</span></div>`:''}
       <div class="di-row"><span class="k">ผู้ขาย</span><span class="v">ที.โอ.พี.กลาส</span></div>
@@ -768,7 +772,8 @@ function setDocType(type){
   docType=type;const dt=DOC_TYPES[type];
   $('copyWrap').style.display=dt.hasCopy?'':'none';
   $('receiptCard').style.display=dt.hasRcp?'':'none';
-  // เลขที่ออกอัตโนมัติเมื่อบันทึก — ไม่ต้อง pre-fill
+  // อัปเดต placeholder ให้แสดงเลขถัดไปที่จะออก
+  const numEl=$('docNumber');if(numEl&&!numEl.value)numEl.placeholder=numPreview(type)||'พิมพ์เองหรือกด 🎲 ออกเลข';
   render();
 }
 
