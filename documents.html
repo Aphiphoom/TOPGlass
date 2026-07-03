@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เอกสาร — ห้างหุ้นส่วนจำกัด ที.โอ.พี.กลาส</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14263d;--ink-soft:#3a516b;--line:#b9c4d2;--line-soft:#e4e9f0;
+  --brand:#1f5fa8;--brand-deep:#163e6e;--paper:#fff;--panel:#eef1f5;--panel-2:#f7f9fb;
+  --field:#fff;--field-border:#cdd6e0;--muted:#6c7c8e;--accent:#c2410c;
+  --ok:#15803d;--danger:#b91c1c;--radius:10px;
+  --shadow:0 1px 2px rgba(20,38,61,.06),0 8px 24px rgba(20,38,61,.10);
+  font-family:'Sarabun','Tahoma',sans-serif;
+}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--panel);color:var(--ink);font-size:15px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.topbar{position:sticky;top:0;z-index:30;background:var(--ink);color:#fff;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:8px 16px;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;white-space:nowrap}
+.brand .mark{width:32px;height:32px;border-radius:7px;background:#fff;color:var(--ink);display:grid;place-items:center;font-weight:800;font-size:11px}
+.brand small{font-weight:500;opacity:.7;font-size:11px;display:block;margin-top:-2px}
+.spacer{flex:1}
+.typewrap{display:flex;align-items:center;gap:8px}
+.typewrap label{font-size:12px;opacity:.8;white-space:nowrap}
+.doctype{background:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:13.5px;font-weight:600;color:var(--ink);min-width:210px;cursor:pointer}
+.actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;padding:7px 12px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.15s;font-family:inherit}
+.btn:hover{background:rgba(255,255,255,.18)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.primary{background:#fff;color:var(--ink);border-color:#fff}.btn.primary:hover{background:#e9eef4}
+.btn .cnt{background:var(--brand);color:#fff;border-radius:20px;padding:0 7px;font-size:11px;margin-left:4px;font-weight:700}
+.home-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:7px 12px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.home-btn:hover{background:rgba(255,255,255,.2)}
+.db-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:4px}
+.db-dot.off{background:#f87171}
+.workspace{display:grid;grid-template-columns:minmax(400px,500px) 1fr}
+@media(max-width:1100px){.workspace{grid-template-columns:1fr}}
+.form{padding:18px 16px 80px;max-height:calc(100vh - 52px);overflow:auto;position:sticky;top:52px}
+@media(max-width:1100px){.form{position:static;max-height:none}}
+.card{background:var(--panel-2);border:1px solid var(--line-soft);border-radius:var(--radius);padding:15px;margin-bottom:12px}
+.card h3{margin:0 0 11px;font-size:12.5px;font-weight:700;color:var(--brand-deep);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:8px}
+.card h3::before{content:"";width:5px;height:14px;border-radius:3px;background:var(--brand)}
+.grid{display:grid;gap:9px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:500px){.g2,.g3{grid-template-columns:1fr}}
+.fld{display:flex;flex-direction:column;gap:4px}
+.fld label{font-size:11px;color:var(--muted);font-weight:700}
+.fld input,.fld textarea,.fld select{border:1px solid var(--field-border);background:var(--field);border-radius:7px;padding:7px 9px;font-size:13px;color:var(--ink);width:100%;font-family:inherit}
+.fld textarea{resize:vertical;min-height:56px;line-height:1.5}
+.fld input:focus,.fld textarea:focus,.fld select:focus{outline:2px solid rgba(31,95,168,.35);border-color:var(--brand)}
+.item-card{border:1px solid var(--field-border);border-radius:9px;padding:11px;margin-bottom:9px;background:#fff;position:relative}
+.item-num{position:absolute;top:-8px;left:-7px;width:22px;height:22px;border-radius:50%;background:var(--brand);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center}
+.item-grid{display:grid;grid-template-columns:80px 64px 1fr 36px;gap:7px;align-items:end}
+.icon-btn{border:1px solid var(--field-border);background:#fff;border-radius:7px;height:34px;cursor:pointer;color:var(--danger);font-size:15px;display:grid;place-items:center}
+.icon-btn:hover{background:#fff0f0}
+.add-line{width:100%;border:1.5px dashed var(--brand);color:var(--brand);background:#fff;border-radius:8px;padding:9px;font-weight:700;cursor:pointer;font-size:13px;font-family:inherit}
+.add-line:hover{background:#eef5fc}
+.ac-wrap{position:relative}
+.ac-list{position:absolute;top:calc(100% - 1px);left:0;right:0;z-index:50;background:#fff;border:1px solid var(--brand);border-radius:0 0 10px 10px;box-shadow:0 8px 24px rgba(20,38,61,.15);max-height:260px;overflow:auto;display:none}
+.ac-list.show{display:block}
+.ac-item{display:flex;align-items:center;gap:9px;padding:9px 12px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--line-soft)}
+.ac-item:last-child{border-bottom:none}
+.ac-item:hover,.ac-item.hi{background:#eef5fc}
+.ac-item b{flex:1;color:var(--ink)}
+.ac-item span{color:var(--muted);font-size:11.5px;white-space:nowrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--field-border);background:#fff;border-radius:20px;padding:5px 11px;font-size:12px;cursor:pointer;font-weight:600;color:var(--ink-soft)}
+.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.preview-wrap{padding:18px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.zoombar{align-self:stretch;display:flex;align-items:center;gap:8px;justify-content:flex-end;color:var(--muted);font-size:12px}
+.zoombar select{border:1px solid var(--field-border);border-radius:7px;padding:4px 7px;background:#fff;font-size:12px}
+.scaler{transform-origin:top center}
+/* A4 */
+.sheet{width:210mm;min-height:297mm;background:var(--paper);box-shadow:var(--shadow);padding:12mm 11mm 10mm;color:var(--ink);position:relative;display:flex;flex-direction:column;font-family:'Sarabun','Tahoma',sans-serif}
+.doc-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.head-left{display:flex;gap:10px;align-items:flex-start}
+.logo-box{width:72px;height:72px;flex:none;display:grid;place-items:center;border-radius:8px;overflow:hidden;border:1px solid var(--line-soft)}
+.logo-box img{max-width:100%;max-height:100%;object-fit:contain}
+.logo-ph{width:100%;height:100%;background:var(--brand-deep);color:#fff;display:grid;place-items:center;text-align:center;font-weight:800;font-size:11px;line-height:1.1;padding:4px;border-radius:8px}
+.seller-name{font-size:18px;font-weight:800;color:var(--ink);line-height:1.15}
+.seller-sub{font-size:10.5px;color:var(--muted);font-weight:600;margin-top:1px}
+.seller-meta{font-size:11px;color:var(--ink-soft);line-height:1.6;margin-top:3px}
+.copy-tag{border:1px solid var(--ink);border-radius:5px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--ink);white-space:nowrap;margin-top:4px}
+.title-box{margin:12px auto 10px;text-align:center;border:1.5px solid var(--brand-deep);border-radius:8px;padding:7px 28px;align-self:center}
+.title-box .th{font-size:20px;font-weight:800;color:var(--brand-deep);line-height:1.1}
+.title-box .en{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px}
+.parties{display:flex;justify-content:space-between;gap:14px;margin-bottom:8px}
+.buyer-box{flex:1;font-size:12px;line-height:1.6;border:1px solid var(--line);padding:8px 10px;border-radius:6px}
+.buyer-box .lbl{color:var(--muted);font-weight:700;display:inline-block;min-width:88px}
+.buyer-box .val{font-weight:600;color:var(--ink)}
+.docinfo{width:210px;border:1px solid var(--line);border-radius:6px;font-size:12px;overflow:hidden}
+.docinfo .di-row{display:flex;justify-content:space-between;align-items:center;padding:5px 9px;border-bottom:1px solid var(--line-soft)}
+.docinfo .di-row:last-child{border-bottom:none}
+.docinfo .k{color:var(--muted);font-weight:700}
+.docinfo .v{font-weight:800;color:var(--brand-deep)}
+.items-area{flex:1 1 auto;min-height:0;margin-top:4px}
+table.items{width:100%;border-collapse:collapse;table-layout:fixed}
+table.items th{background:var(--brand-deep);color:#fff;font-size:11.5px;font-weight:600;padding:7px;border:1px solid var(--brand)}
+table.items td{border:1px solid var(--line);padding:6px 7px;font-size:12px;vertical-align:top;word-wrap:break-word}
+.c-no{text-align:center}.c-qty{text-align:right}.c-price{text-align:right}.c-total{text-align:right}
+.it-name{font-weight:700;color:var(--ink)}
+.it-spec{color:var(--ink-soft);font-size:10.5px;line-height:1.5;white-space:pre-wrap}
+table.items tr.grow td{border-top:none}
+.below{display:flex;gap:0;margin-top:0}
+.below-left{flex:1;border:1px solid var(--line);padding:9px 11px;font-size:11.5px;border-right:none}
+.words-row{display:flex;gap:6px;align-items:baseline;border-bottom:1px dashed var(--line);padding-bottom:6px;margin-bottom:7px}
+.words-row .lbl{color:var(--muted);font-weight:700;white-space:nowrap;font-size:11px}
+.words-row .val{font-weight:700;color:var(--brand-deep);font-size:12.5px}
+.pay-info{line-height:1.7;font-size:11.5px}.pay-info .k{color:var(--muted);font-weight:700}
+.note-mini{margin-top:6px;color:var(--accent);font-weight:700;font-size:11px;line-height:1.5;white-space:pre-wrap}
+.sum-box{width:248px;border:1px solid var(--line)}
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid var(--line-soft);font-size:12px}
+.sum-row:last-child{border-bottom:none}
+.sum-row .k{color:var(--ink-soft)}.sum-row .k small{color:var(--muted);font-weight:400;display:block;font-size:10px}
+.sum-row .v{font-weight:700;color:var(--ink)}
+.sum-row.grand{background:var(--brand-deep);color:#fff}
+.sum-row.grand .k{color:#fff}.sum-row.grand .k small{color:rgba(255,255,255,.7)}
+.sum-row.grand .v{color:#fff;font-size:14px}
+.doc-footer{flex:0 0 auto;padding-top:8px}
+.foot-sigs{padding-top:14px;display:flex;justify-content:flex-end;gap:26px}
+.sign{width:195px;text-align:center;font-size:11px}
+.sign .line{border-bottom:1px dotted var(--ink-soft);height:38px;margin-bottom:5px}
+.sign .role{color:var(--muted);font-weight:700}
+.sign .name{font-weight:700;color:var(--ink);margin-top:2px}
+.stamp-area{font-size:11px;color:var(--ink-soft);align-self:flex-end;margin-right:auto;padding-left:2px}
+/* modals */
+.overlay{position:fixed;inset:0;background:rgba(10,20,33,.5);display:none;z-index:60;align-items:flex-start;justify-content:center;padding:36px 14px;overflow:auto}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:720px;box-shadow:0 24px 70px rgba(0,0,0,.3);overflow:hidden}
+.mhead{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line-soft)}
+.mhead h2{margin:0;font-size:16px;font-weight:800;color:var(--ink);flex:1}
+.mclose{border:none;background:var(--panel);width:32px;height:32px;border-radius:8px;font-size:15px;cursor:pointer;color:var(--ink)}
+.mbody{padding:14px 18px;max-height:68vh;overflow:auto}
+.h-search{width:100%;border:1px solid var(--field-border);border-radius:9px;padding:9px 11px;font-size:13.5px;margin-bottom:10px;font-family:inherit}
+.h-filter{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.h-ftag{border:1px solid var(--field-border);background:#fff;border-radius:20px;padding:4px 11px;font-size:12px;cursor:pointer;font-weight:600;color:var(--ink-soft)}
+.h-ftag.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.h-row{display:flex;align-items:center;gap:9px;padding:10px 11px;border:1px solid var(--line-soft);border-radius:9px;margin-bottom:7px;background:#fff}
+.h-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;color:#fff;white-space:nowrap}
+.hq{background:#1f5fa8}.hd{background:#0e7490}.hi{background:#7c3aed}.hr{background:#15803d}.ht{background:#c2410c}
+.h-info{flex:1;min-width:0}
+.h-num{font-weight:700;color:var(--ink);font-size:13px}
+.h-sub{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.h-amt{font-weight:700;color:var(--brand-deep);font-size:13px;white-space:nowrap}
+.h-btns{display:flex;gap:5px}
+.mbtn{border:1px solid var(--field-border);background:#fff;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:600;cursor:pointer;color:var(--ink-soft);font-family:inherit}
+.mbtn:hover{background:var(--panel)}.mbtn.go{background:var(--brand);border-color:var(--brand);color:#fff}.mbtn.go:hover{background:var(--brand-deep)}
+.mbtn.del{color:var(--danger)}.mbtn.del:hover{background:#fff0f0}
+.conv-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.conv-btn{border:1px solid var(--field-border);background:#fff;border-radius:10px;padding:12px;text-align:left;cursor:pointer;font-size:13.5px;font-weight:700;color:var(--ink);font-family:inherit}
+.conv-btn:hover{border-color:var(--brand);background:var(--panel-2)}
+.conv-btn small{display:block;font-weight:500;color:var(--brand);font-size:10.5px;margin-top:3px}
+.sh{font-size:12.5px;font-weight:800;color:var(--brand-deep);margin:16px 0 5px}
+.sh:first-child{margin-top:0}
+.num-grid{border:1px solid var(--line-soft);border-radius:9px;overflow:hidden}
+.ng-head,.ng-row{display:grid;grid-template-columns:1.2fr .8fr .5fr .7fr 1fr;gap:8px;align-items:center;padding:7px 9px}
+.ng-head{background:var(--panel-2);font-size:10.5px;font-weight:700;color:var(--muted)}
+.ng-row{border-top:1px solid var(--line-soft);font-size:12px}
+.ng-row input{border:1px solid var(--field-border);border-radius:5px;padding:5px;font-size:12px;width:100%;font-family:inherit}
+.nprev{font-weight:700;color:var(--brand-deep);font-size:11.5px;text-align:right}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 20px;border-radius:30px;font-size:13px;font-weight:600;box-shadow:var(--shadow);opacity:0;transition:.25s;z-index:80;pointer-events:none}
+.toast.show{opacity:1}
+.empty-hist{text-align:center;color:var(--muted);padding:32px;font-size:13px;line-height:1.7}
+@media print{
+  @page{size:A4;margin:0}
+  body{background:#fff}
+  .topbar,.form,.zoombar,.overlay{display:none!important}
+  .workspace,.preview-wrap{display:block;padding:0}
+  .scaler{transform:none!important}
+  .sheet{box-shadow:none;margin:0;width:210mm;min-height:297mm;page-break-after:always}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">
+    <span class="mark">TOP</span>
+    <span>ที.โอ.พี.กลาส<small>ระบบเอกสารธุรกิจ</small></span>
+  </div>
+  <div class="typewrap"><label>ประเภทเอกสาร</label><select class="doctype" id="docType"></select></div>
+  <div class="spacer"></div>
+  <div class="actions">
+    <a class="home-btn" href="index.html">🏠 POS</a>
+    <button class="btn" id="btnHistory">📋 ประวัติ<span class="cnt" id="histCount" style="display:none">0</span></button>
+    <button class="btn" id="btnSave">💾 บันทึก</button>
+    <button class="btn" id="btnNew">↺ ใหม่</button>
+    <button class="btn" id="btnSettings">⚙️ ตั้งค่า</button>
+    <button class="btn primary" id="btnPrint">🖨️ พิมพ์ / PDF</button>
+    <span><span class="db-dot" id="dbDot"></span><span id="dbStatus" style="font-size:11px;opacity:.7">กำลังเชื่อมต่อ...</span></span>
+  </div>
+</div>
+
+<div class="workspace">
+  <div class="form">
+    <div class="card">
+      <h3>ข้อมูลผู้ซื้อ</h3>
+      <div class="fld"><label>ชื่อลูกค้า / บริษัท</label>
+        <div class="ac-wrap">
+          <input id="buyerName" class="ac-input" autocomplete="off" placeholder="พิมพ์ชื่อเพื่อค้นหา...">
+          <div class="ac-list" id="custAcList"></div>
+        </div>
+      </div>
+      <div class="fld" style="margin-top:9px"><label>สาขา</label><input id="buyerBranch" placeholder="สำนักงานใหญ่"></div>
+      <div class="fld" style="margin-top:9px"><label>ที่อยู่</label><textarea id="buyerAddr" rows="3"></textarea></div>
+      <div class="grid g2" style="margin-top:9px">
+        <div class="fld"><label>เลขประจำตัวผู้เสียภาษี</label><input id="buyerTaxId" placeholder="0 0000 00000 00 0"></div>
+        <div class="fld"><label>ผู้ติดต่อ / โทร</label><input id="buyerContact"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>รายละเอียดเอกสาร</h3>
+      <div class="grid g2">
+        <div class="fld"><label>เลขที่เอกสาร</label><input id="docNumber" readonly style="background:var(--panel-2);color:var(--brand-deep);font-weight:700"></div>
+        <div class="fld"><label>วันที่</label><input type="date" id="docDate"></div>
+      </div>
+      <div class="grid g2" style="margin-top:9px">
+        <div class="fld"><label>อ้างอิงเลขที่</label><input id="docRef" placeholder="เลขที่ใบเสนอราคา..."></div>
+        <div class="fld"><label>ยืนราคา / ชำระภายใน (วัน)</label><input id="docValid" type="number" placeholder="30"></div>
+      </div>
+      <div id="copyWrap" class="fld" style="margin-top:9px;display:none">
+        <label>ชนิดสำเนา</label>
+        <div class="chips">
+          <span class="chip on" data-copy="ต้นฉบับ">ต้นฉบับ</span>
+          <span class="chip" data-copy="สำเนา">สำเนา</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="receiptCard" class="card" style="display:none">
+      <h3>การรับชำระ</h3>
+      <div class="grid g2">
+        <div class="fld"><label>วิธีชำระ</label>
+          <select id="rcpMethod"><option>เงินสด</option><option>เงินโอน</option><option>เช็คธนาคาร</option><option>บัตรเครดิต</option></select>
+        </div>
+        <div class="fld"><label>เลขอ้างอิง (เช็ค/สลิป)</label><input id="rcpRef"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>รายการสินค้า / บริการ</h3>
+      <div id="itemsEditor"></div>
+      <button class="add-line" id="addItem">+ เพิ่มรายการ</button>
+    </div>
+
+    <div class="card">
+      <h3>ส่วนลด &amp; ภาษีมูลค่าเพิ่ม</h3>
+      <div class="grid g3">
+        <div class="fld"><label>ชนิดส่วนลด</label>
+          <select id="discType"><option value="percent">%</option><option value="amount">บาท</option></select>
+        </div>
+        <div class="fld"><label>ส่วนลด</label><input type="number" id="discValue" step="0.01" placeholder="0"></div>
+        <div class="fld"><label>VAT (%)</label><input type="number" id="vatRate" step="0.01" value="7"></div>
+      </div>
+      <div class="fld" style="margin-top:9px"><label>การคิดภาษี</label>
+        <select id="vatMode">
+          <option value="exclude">แยกภาษี (ยังไม่รวม VAT)</option>
+          <option value="include">ราคารวม VAT แล้ว</option>
+          <option value="none">ไม่มี VAT</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>เงื่อนไข &amp; หมายเหตุ</h3>
+      <div class="fld"><label>หมายเหตุ / เงื่อนไขพิเศษ</label><textarea id="docNote" rows="3"></textarea></div>
+    </div>
+  </div>
+
+  <div class="preview-wrap">
+    <div class="zoombar">
+      <span>ตัวอย่าง A4</span>
+      <select id="zoom"><option value="0.5">50%</option><option value="0.65">65%</option><option value="0.75" selected>75%</option><option value="0.9">90%</option><option value="1">100%</option></select>
+    </div>
+    <div class="scaler" id="scaler"><div class="sheet" id="sheet"></div></div>
+  </div>
+</div>
+
+<!-- History Modal -->
+<div class="overlay" id="histOverlay">
+  <div class="modal">
+    <div class="mhead"><h2>📋 ประวัติเอกสาร</h2><button class="mclose" data-close="histOverlay">✕</button></div>
+    <div class="mbody">
+      <input class="h-search" id="histSearch" placeholder="ค้นหาเลขที่ หรือ ชื่อลูกค้า...">
+      <div class="h-filter" id="histFilter">
+        <span class="h-ftag on" data-ft="all">ทั้งหมด</span>
+        <span class="h-ftag" data-ft="q">ใบเสนอราคา</span>
+        <span class="h-ftag" data-ft="d">ใบส่งสินค้า</span>
+        <span class="h-ftag" data-ft="i">ใบวางบิล</span>
+        <span class="h-ftag" data-ft="r">ใบเสร็จ</span>
+        <span class="h-ftag" data-ft="t">ใบกำกับภาษี</span>
+      </div>
+      <div id="histList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Convert Modal -->
+<div class="overlay" id="convOverlay">
+  <div class="modal" style="max-width:520px">
+    <div class="mhead"><h2 id="convTitle">ออกเอกสารต่อ</h2><button class="mclose" data-close="convOverlay">✕</button></div>
+    <div class="mbody" id="convBody"></div>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="overlay" id="setOverlay">
+  <div class="modal" style="max-width:620px">
+    <div class="mhead"><h2>⚙️ ตั้งค่า</h2><button class="mclose" data-close="setOverlay">✕</button></div>
+    <div class="mbody" id="setBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Supabase module loader -->
+<script type="module">
+(async()=>{
+  try{
+    const[{createClient},{SUPABASE_URL,SUPABASE_ANON_KEY}]=await Promise.all([
+      import('https://esm.sh/@supabase/supabase-js@2'),
+      import('./config.js')
+    ]);
+    window._sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+    const[{data:c},{data:p},{data:h},{data:n}]=await Promise.all([
+      window._sb.from('customers').select('id,name,phone,address').order('name'),
+      window._sb.from('products').select('id,name,sku,unit,price').order('name'),
+      window._sb.from('documents').select('id,doc_type,doc_number,buyer_name,doc_date,grand_total,data,created_at,updated_at').order('created_at',{ascending:false}).limit(500),
+      window._sb.from('doc_numbering').select('*'),
+    ]);
+    if(c)window._sbCustomers=c;
+    if(p)window._sbProducts=p;
+    if(h)window._sbHistory=h;
+    if(n)window._sbNumbering=n;
+    window._sbOk=true;
+  }catch(e){
+    console.warn('Supabase:',e.message);
+    window._sbOk=false;
+  }
+  if(window._initDocs)window._initDocs();
+  else window._sbLoaded=true;
+})();
+</script>
+
+<script>
+'use strict';
+const DOC_TYPES={
+  q:{th:'ใบเสนอราคา',en:'QUOTATION',cls:'hq',hasCopy:false,hasRcp:false},
+  d:{th:'ใบส่งสินค้า',en:'DELIVERY NOTE',cls:'hd',hasCopy:false,hasRcp:false},
+  i:{th:'ใบวางบิล / ใบแจ้งหนี้',en:'INVOICE',cls:'hi',hasCopy:false,hasRcp:false},
+  r:{th:'ใบเสร็จรับเงิน',en:'RECEIPT',cls:'hr',hasCopy:true,hasRcp:true},
+  t:{th:'ใบกำกับภาษี',en:'TAX INVOICE',cls:'ht',hasCopy:true,hasRcp:false},
+};
+const CONVERT_MAP={q:['d','i','r','t'],d:['r','t'],i:['r','t'],r:[],t:['r']};
+
+let seller={
+  name:'ห้างหุ้นส่วนจำกัด ที.โอ.พี.กลาส',nameEn:'T.O.P. GLASS LIMITED PARTNERSHIP',
+  taxId:'',branch:'สำนักงานใหญ่',address:'',phone:'',fax:'',email:'',logo:'',
+  bank:'',accountNo:'',accountName:'',signName:'',signRole:'ผู้มีอำนาจลงนาม',
+};
+let numbering={};
+let docType='q', copyTag='ต้นฉบับ';
+let items=[{qty:'1',unit:'',detail:'',price:''}];
+let historyList=[];
+let customers=[], products=[];
+let currentHistId=null;
+let histTypeFilter='all';
+let saving=false;
+
+/* ── utils ─────────────────────────────────── */
+const $=id=>document.getElementById(id);
+function num(v){return parseFloat(String(v||'').replace(/,/g,''))||0;}
+function money(n){return n.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function round2(v){return Math.round(v*100)/100;}
+function todayISO(){return new Date().toISOString().slice(0,10);}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function toast(msg,dur=2500){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),dur);}
+function setDB(ok){
+  const dot=$('dbDot'),st=$('dbStatus');
+  dot.className='db-dot'+(ok?'':' off');
+  st.textContent=ok?'เชื่อมต่อแล้ว':'ออฟไลน์ (localStorage)';
+}
+
+/* ── Thai number ────────────────────────────── */
+const TH_ONES=['','หนึ่ง','สอง','สาม','สี่','ห้า','หก','เจ็ด','แปด','เก้า'];
+const TH_TENS=['','สิบ','ยี่สิบ','สามสิบ','สี่สิบ','ห้าสิบ','หกสิบ','เจ็ดสิบ','แปดสิบ','เก้าสิบ'];
+function thaiNum(n){
+  if(n===0)return'ศูนย์';if(n<0)return'ลบ'+thaiNum(-n);
+  let r='',m=Math.floor(n);
+  const B=Math.floor(m/1000000000);if(B)r+=thaiNum(B)+'พันล้าน';
+  const M=Math.floor((m%1000000000)/1000000);if(M)r+=thaiNum(M)+'ล้าน';
+  const K=Math.floor((m%1000000)/1000);if(K)r+=thaiNum(K)+'พัน';
+  const H=Math.floor((m%1000)/100);if(H)r+=TH_ONES[H]+'ร้อย';
+  const T=Math.floor((m%100)/10);if(T)r+=TH_TENS[T];
+  const O=m%10;if(O){if(T===1&&O===1)r+='เอ็ด';else r+=TH_ONES[O];}
+  return r;
+}
+function bahtText(v){
+  const n=Math.round(v*100);const b=Math.floor(n/100),s=n%100;
+  let r=thaiNum(b)+'บาท';
+  if(s){const d=Math.floor(s/10),u=s%10;r+=TH_TENS[d]+(u?TH_ONES[u]:'')+'สตางค์';}
+  else r+='ถ้วน';
+  return r;
+}
+
+function fmtDate(iso){
+  if(!iso)return'';
+  const d=new Date(iso+'T00:00:00');
+  const M=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  return`${d.getDate()} ${M[d.getMonth()]} ${d.getFullYear()+543}`;
+}
+
+/* ── localStorage seller/numbering ─────────── */
+function saveSeller(){try{localStorage.setItem('topg_seller',JSON.stringify(seller));}catch(e){}}
+function loadSeller(){try{const s=localStorage.getItem('topg_seller');if(s)seller=Object.assign(seller,JSON.parse(s));}catch(e){}}
+
+function defaultNum(){const n={};Object.keys(DOC_TYPES).forEach(k=>{n[k]={prefix:k.toUpperCase(),next:1,pad:4};});return n;}
+function numPreview(type){
+  const n=numbering[type]||defaultNum()[type];
+  const yr=new Date().getFullYear()+543;
+  return`${n.prefix}-${yr}-${'0'.repeat(n.pad-1)}?`;
+}
+
+/* ── Supabase helpers ───────────────────────── */
+const sb=()=>window._sb;
+
+async function loadNumberingFromDB(){
+  if(!sb()||!window._sbNumbering)return;
+  window._sbNumbering.forEach(row=>{
+    numbering[row.doc_type]={prefix:row.prefix,next:row.next_num,pad:row.pad};
+  });
+}
+
+async function saveNumberingToDB(){
+  if(!sb())return;
+  const rows=Object.entries(numbering).map(([k,v])=>({doc_type:k,prefix:v.prefix,next_num:v.next,pad:v.pad,updated_at:new Date().toISOString()}));
+  await sb().from('doc_numbering').upsert(rows,{onConflict:'doc_type'});
+}
+
+async function getNextNumber(type){
+  if(sb()){
+    const{data,error}=await sb().rpc('get_next_doc_number',{p_type:type});
+    if(!error&&data){
+      // sync local numbering
+      if(numbering[type])numbering[type].next++;
+      return data;
+    }
+  }
+  // fallback: local
+  const n=numbering[type]||defaultNum()[type];
+  const yr=new Date().getFullYear()+543;
+  const result=`${n.prefix}-${yr}-${String(n.next).padStart(n.pad,'0')}`;
+  if(numbering[type])numbering[type].next++;
+  return result;
+}
+
+/* ── Document save/load ─────────────────────── */
+function formSnapshot(){
+  return{
+    buyerName:$('buyerName').value,buyerBranch:$('buyerBranch').value,
+    buyerAddr:$('buyerAddr').value,buyerTaxId:$('buyerTaxId').value,buyerContact:$('buyerContact').value,
+    docDate:$('docDate').value,docRef:$('docRef').value,docValid:$('docValid').value,docNote:$('docNote').value,
+    discType:$('discType').value,discValue:$('discValue').value,vatRate:$('vatRate').value,vatMode:$('vatMode').value,
+    rcpMethod:$('rcpMethod').value,rcpRef:$('rcpRef').value,
+    copyTag,items:items.map(i=>({...i})),
+  };
+}
+
+async function saveDoc(andPrint=false){
+  if(saving)return;saving=true;
+  const btn=$('btnSave');const pBtn=$('btnPrint');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> บันทึก...';
+  pBtn.disabled=true;
+  try{
+    const t=calcTotals();
+    const isNew=!currentHistId;
+    let docNum=$('docNumber').value;
+    if(isNew||!docNum||docNum.includes('?')){
+      docNum=await getNextNumber(docType);
+      $('docNumber').value=docNum;
+    }
+    const payload={
+      doc_type:docType,doc_number:docNum,
+      buyer_name:$('buyerName').value||'ไม่ระบุลูกค้า',
+      doc_date:$('docDate').value||todayISO(),
+      grand_total:t.grand,ref_number:$('docRef').value||'',
+      data:formSnapshot(),updated_at:new Date().toISOString(),
+    };
+    if(currentHistId)payload.id=currentHistId;
+
+    if(sb()){
+      const{data,error}=await sb().from('documents').upsert(payload,{onConflict:'id'}).select().single();
+      if(error)throw error;
+      currentHistId=data.id;
+      // update local list
+      const idx=historyList.findIndex(h=>h.id===data.id);
+      const entry={id:data.id,doc_type:data.doc_type,doc_number:data.doc_number,
+        buyer_name:data.buyer_name,doc_date:data.doc_date,grand_total:data.grand_total,
+        data:data.data,created_at:data.created_at,updated_at:data.updated_at};
+      if(idx>=0)historyList[idx]=entry; else historyList.unshift(entry);
+    } else {
+      // localStorage fallback
+      const fallId=currentHistId||'LS_'+Date.now();
+      currentHistId=fallId;payload.id=fallId;payload.created_at=payload.updated_at;
+      const idx=historyList.findIndex(h=>h.id===fallId);
+      if(idx>=0)historyList[idx]=payload; else historyList.unshift(payload);
+      try{localStorage.setItem('topg_hist',JSON.stringify(historyList.slice(0,200)));}catch(e){}
+    }
+    updateHistCount();toast(`บันทึกแล้ว: ${docNum}`);
+    if(andPrint)window.print();
+  }catch(e){toast('บันทึกไม่สำเร็จ: '+e.message,3500);}
+  finally{saving=false;btn.disabled=false;btn.innerHTML='💾 บันทึก';pBtn.disabled=false;}
+}
+
+async function deleteDoc(id){
+  if(!confirm('ลบเอกสารนี้ออกจากฐานข้อมูล?'))return;
+  if(sb()){const{error}=await sb().from('documents').delete().eq('id',id);if(error){toast('ลบไม่สำเร็จ: '+error.message,3500);return;}}
+  historyList=historyList.filter(h=>h.id!==id);
+  if(!sb()){try{localStorage.setItem('topg_hist',JSON.stringify(historyList));}catch(e){}}
+  updateHistCount();renderHistory($('histSearch').value);toast('ลบแล้ว');
+}
+
+/* ── Calc ───────────────────────────────────── */
+function calcTotals(){
+  const subRaw=items.reduce((s,it)=>s+round2(num(it.qty)*num(it.price)),0);
+  const dv=num($('discValue')?.value||0),dt=$('discType')?.value||'percent';
+  const disc=dt==='percent'?round2(subRaw*dv/100):Math.min(dv,subRaw);
+  const base=round2(subRaw-disc),vm=$('vatMode')?.value||'exclude',vr=num($('vatRate')?.value||0)/100;
+  let vat=0,grand=0;
+  if(vm==='exclude'){vat=round2(base*vr);grand=base+vat;}
+  else if(vm==='include'){grand=base;vat=round2(base*vr/(1+vr));}
+  else{grand=base;}
+  return{subRaw,disc,base,vat,grand,vm};
+}
+
+/* ── Items editor ───────────────────────────── */
+function renderItems(){
+  const div=$('itemsEditor');
+  div.innerHTML=items.map((it,i)=>`
+  <div class="item-card" data-i="${i}">
+    <span class="item-num">${i+1}</span>
+    <div class="item-grid">
+      <div class="fld"><label>จำนวน</label><input class="it-qty" type="number" step="0.01" value="${it.qty||''}"></div>
+      <div class="fld"><label>หน่วย</label><input class="it-unit" value="${it.unit||''}"></div>
+      <div class="fld"><label>รายละเอียด</label>
+        <div class="ac-wrap">
+          <input class="it-detail ac-input" autocomplete="off" value="${it.detail||''}" placeholder="ชื่อสินค้า / บริการ">
+          <div class="ac-list"></div>
+        </div>
+      </div>
+      <button class="icon-btn" data-rm="${i}">✕</button>
+    </div>
+    <div class="fld" style="margin-top:7px"><label>ราคาต่อหน่วย</label><input class="it-price" type="number" step="0.01" value="${it.price||''}"></div>
+  </div>`).join('');
+  div.querySelectorAll('.it-qty').forEach((el,i)=>{el.oninput=()=>{items[i].qty=el.value;render();}});
+  div.querySelectorAll('.it-unit').forEach((el,i)=>{el.oninput=()=>{items[i].unit=el.value;render();}});
+  div.querySelectorAll('.it-price').forEach((el,i)=>{el.oninput=()=>{items[i].price=el.value;render();}});
+  div.querySelectorAll('[data-rm]').forEach(b=>{
+    b.onclick=()=>{const i=+b.dataset.rm;items.splice(i,1);if(!items.length)items=[{qty:'1',unit:'',detail:'',price:''}];renderItems();render();};
+  });
+  div.querySelectorAll('.it-detail').forEach((inp,i)=>{
+    const list=inp.nextElementSibling;
+    inp.oninput=()=>{
+      items[i].detail=inp.value;
+      const q=inp.value.toLowerCase();
+      const m=products.filter(p=>p.name.toLowerCase().includes(q)||(p.sku||'').toLowerCase().includes(q)).slice(0,12);
+      list.innerHTML=m.map(p=>`<div class="ac-item" data-pid="${p.id}"><b>${esc(p.name)}</b><span>฿${money(num(p.price))} / ${esc(p.unit||'')}</span></div>`).join('');
+      list.classList.toggle('show',q.length>0&&m.length>0);
+    };
+    inp.onblur=()=>setTimeout(()=>list.classList.remove('show'),200);
+    list.addEventListener('mousedown',e=>{
+      const row=e.target.closest('.ac-item');if(!row)return;
+      const p=products.find(x=>String(x.id)===row.dataset.pid);
+      if(p){items[i].detail=p.name;items[i].price=String(p.price||'');items[i].unit=p.unit||'';}
+      renderItems();render();
+    });
+  });
+}
+
+/* ── Customer AC ────────────────────────────── */
+function setupCustAc(){
+  const inp=$('buyerName'),list=$('custAcList');
+  inp.oninput=()=>{
+    const q=inp.value.toLowerCase();
+    const m=customers.filter(c=>c.name.toLowerCase().includes(q)||(c.phone||'').includes(q)).slice(0,10);
+    list.innerHTML=m.map(c=>`<div class="ac-item" data-cid="${c.id}"><b>${esc(c.name)}</b><span>${esc(c.phone||'')}</span></div>`).join('');
+    list.classList.toggle('show',q.length>0&&m.length>0);render();
+  };
+  inp.onblur=()=>setTimeout(()=>list.classList.remove('show'),200);
+  list.addEventListener('mousedown',e=>{
+    const row=e.target.closest('.ac-item');if(!row)return;
+    const c=customers.find(x=>String(x.id)===row.dataset.cid);
+    if(c){inp.value=c.name;$('buyerAddr').value=c.address||'';$('buyerContact').value=c.phone||'';}
+    list.classList.remove('show');render();
+  });
+}
+
+/* ── A4 Render ──────────────────────────────── */
+function render(){
+  const t=calcTotals(),dt=DOC_TYPES[docType];
+  const docNum=$('docNumber')?.value||'—';
+  const docDate=$('docDate')?.value||todayISO();
+  const buyerName=$('buyerName')?.value||'';
+  const buyerBranch=$('buyerBranch')?.value||'';
+  const buyerAddr=$('buyerAddr')?.value||'';
+  const buyerTaxId=$('buyerTaxId')?.value||'';
+  const buyerContact=$('buyerContact')?.value||'';
+  const docRef=$('docRef')?.value||'';
+  const docNote=$('docNote')?.value||'';
+  const rcpMethod=$('rcpMethod')?.value||'';
+  const rcpRef=$('rcpRef')?.value||'';
+  const vatLabel=t.vm==='exclude'?`VAT ${$('vatRate')?.value||7}%`:t.vm==='include'?`VAT ${$('vatRate')?.value||7}% (รวมแล้ว)`:'';
+
+  const itemRows=items.map((it,i)=>{
+    if(!it.detail&&!num(it.price))return'';
+    const ls=(it.detail||'').split('\n');const title=ls[0]||'';const spec=ls.slice(1).join('\n');
+    const amt=round2(num(it.qty)*num(it.price));
+    return`<tr><td class="c-no">${i+1}</td>
+      <td><div class="it-name">${esc(title)}</div>${spec?`<div class="it-spec">${esc(spec)}</div>`:''}</td>
+      <td class="c-qty">${money(num(it.qty))}</td><td>${esc(it.unit||'')}</td>
+      <td class="c-price">${money(num(it.price))}</td><td class="c-total">${money(amt)}</td></tr>`;
+  }).join('');
+
+  $('sheet').innerHTML=`
+  <div class="doc-head">
+    <div class="head-left">
+      <div class="logo-box">${seller.logo?`<img src="${seller.logo}" alt="logo">`:'<div class="logo-ph">TOP<br>GLASS</div>'}</div>
+      <div>
+        <div class="seller-name">${esc(seller.name)}</div>
+        <div class="seller-sub">${esc(seller.nameEn)}</div>
+        <div class="seller-meta">${[
+          seller.address&&esc(seller.address),
+          seller.phone&&'โทร '+esc(seller.phone),
+          seller.fax&&'แฟกซ์ '+esc(seller.fax),
+          seller.email&&esc(seller.email),
+          seller.taxId&&'เลขผู้เสียภาษี '+esc(seller.taxId)+' '+esc(seller.branch||'สำนักงานใหญ่')
+        ].filter(Boolean).join(' &nbsp;|&nbsp; ')}</div>
+      </div>
+    </div>
+    <div style="text-align:right">${dt.hasCopy?`<div class="copy-tag">${copyTag}</div>`:''}</div>
+  </div>
+  <div class="title-box"><div class="th">${dt.th}</div><div class="en">${dt.en}</div></div>
+  <div class="parties">
+    <div class="buyer-box">
+      <div><span class="lbl">ลูกค้า</span><span class="val">${esc(buyerName)||'&nbsp;'}</span></div>
+      ${buyerBranch?`<div><span class="lbl">สาขา</span><span class="val">${esc(buyerBranch)}</span></div>`:''}
+      ${buyerAddr?`<div style="display:flex;gap:4px;align-items:baseline"><span class="lbl">ที่อยู่</span><span>${esc(buyerAddr)}</span></div>`:''}
+      ${buyerTaxId?`<div><span class="lbl">เลขผู้เสียภาษี</span><span class="val">${esc(buyerTaxId)}</span></div>`:''}
+      ${buyerContact?`<div><span class="lbl">โทร / ผู้ติดต่อ</span><span>${esc(buyerContact)}</span></div>`:''}
+    </div>
+    <div class="docinfo">
+      <div class="di-row"><span class="k">เลขที่</span><span class="v">${esc(docNum)}</span></div>
+      <div class="di-row"><span class="k">วันที่</span><span class="v">${fmtDate(docDate)}</span></div>
+      ${docRef?`<div class="di-row"><span class="k">อ้างอิง</span><span class="v">${esc(docRef)}</span></div>`:''}
+      <div class="di-row"><span class="k">ผู้ขาย</span><span class="v">ที.โอ.พี.กลาส</span></div>
+    </div>
+  </div>
+  <div class="items-area">
+    <table class="items">
+      <colgroup><col style="width:36px"><col><col style="width:66px"><col style="width:52px"><col style="width:86px"><col style="width:90px"></colgroup>
+      <thead><tr>
+        <th class="c-no">ลำดับ</th><th>รายละเอียดสินค้า / บริการ</th>
+        <th class="c-qty">จำนวน</th><th>หน่วย</th>
+        <th class="c-price">ราคา/หน่วย</th><th class="c-total">จำนวนเงิน</th>
+      </tr></thead>
+      <tbody>${itemRows}<tr class="grow"><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody>
+    </table>
+  </div>
+  <div class="below">
+    <div class="below-left">
+      <div class="words-row"><span class="lbl">จำนวนเงิน (ตัวอักษร)</span><span class="val">${bahtText(t.grand)}</span></div>
+      ${seller.bank?`<div class="pay-info"><span class="k">ธนาคาร</span> ${esc(seller.bank)} &nbsp;<span class="k">บัญชี</span> ${esc(seller.accountNo)} &nbsp;<span class="k">ชื่อบัญชี</span> ${esc(seller.accountName)}</div>`:''}
+      ${dt.hasRcp?`<div class="pay-info" style="margin-top:4px"><span class="k">วิธีชำระ</span> ${esc(rcpMethod)}${rcpRef?' &nbsp;<span class="k">อ้างอิง</span> '+esc(rcpRef):''}</div>`:''}
+      ${docNote?`<div class="note-mini">${esc(docNote)}</div>`:''}
+    </div>
+    <div class="sum-box">
+      <div class="sum-row"><span class="k">ยอดรวม</span><span class="v">฿${money(t.subRaw)}</span></div>
+      <div class="sum-row"><span class="k">ส่วนลด</span><span class="v">฿${money(t.disc)}</span></div>
+      <div class="sum-row"><span class="k">ยอดหลังหักส่วนลด</span><span class="v">฿${money(t.base)}</span></div>
+      ${t.vm!=='none'?`<div class="sum-row"><span class="k">${vatLabel}</span><span class="v">฿${money(t.vat)}</span></div>`:''}
+      <div class="sum-row grand"><span class="k">ยอดรวมสุทธิ<small>GRAND TOTAL</small></span><span class="v">฿${money(t.grand)}</span></div>
+    </div>
+  </div>
+  <div class="doc-footer">
+    <div class="foot-sigs">
+      <div class="stamp-area">${dt.hasRcp?'<div style="font-weight:700;color:var(--ok);margin-bottom:4px">✓ ได้รับชำระเงินแล้ว</div>':''}<div style="color:var(--muted)">วันที่: ${fmtDate(todayISO())}</div></div>
+      <div class="sign"><div class="line"></div><div class="role">ผู้รับสินค้า / ลูกค้า</div></div>
+      <div class="sign"><div class="line"></div><div class="role">${esc(seller.signRole||'ผู้มีอำนาจลงนาม')}</div><div class="name">${esc(seller.signName||'')}</div></div>
+    </div>
+  </div>`;
+  // grow row
+  setTimeout(()=>{
+    const sheet=$('sheet'),grow=sheet.querySelector('tr.grow');if(!grow)return;
+    const sh=sheet.getBoundingClientRect().height;
+    const used=['.doc-head','.title-box','.parties','table.items thead','.below','.doc-footer']
+      .reduce((s,q)=>{const el=sheet.querySelector(q);return s+(el?el.getBoundingClientRect().height:0);},0)
+      +Array.from(sheet.querySelectorAll('table.items tbody tr:not(.grow)')).reduce((s,r)=>s+r.getBoundingClientRect().height,0)+40;
+    grow.style.height=Math.max(24,sh-used)+'px';
+  },0);
+}
+
+/* ── Doc type ───────────────────────────────── */
+function setDocType(type){
+  docType=type;const dt=DOC_TYPES[type];
+  $('copyWrap').style.display=dt.hasCopy?'':'none';
+  $('receiptCard').style.display=dt.hasRcp?'':'none';
+  if(!$('docNumber').value||$('docNumber').value.includes('?'))
+    $('docNumber').value=numPreview(type);
+  render();
+}
+
+function buildDocTypeSelect(){
+  const sel=$('docType');const prev=sel.value||docType;
+  sel.innerHTML=Object.entries(DOC_TYPES).map(([k,v])=>`<option value="${k}">${v.th}</option>`).join('');
+  sel.value=prev;
+}
+
+/* ── History ────────────────────────────────── */
+function updateHistCount(){const el=$('histCount');if(!el)return;el.textContent=historyList.length;el.style.display=historyList.length?'':'none';}
+
+function renderHistory(q=''){
+  let list=historyList;
+  if(histTypeFilter!=='all')list=list.filter(h=>h.doc_type===histTypeFilter);
+  if(q)list=list.filter(h=>h.doc_number?.toLowerCase().includes(q.toLowerCase())||h.buyer_name?.toLowerCase().includes(q.toLowerCase()));
+  const el=$('histList');
+  if(!list.length){el.innerHTML=`<div class="empty-hist">ไม่มีประวัติเอกสาร${q||histTypeFilter!=='all'?' (ลองล้างตัวกรอง)':''}</div>`;return;}
+  el.innerHTML=list.slice(0,100).map(h=>{
+    const dt=DOC_TYPES[h.doc_type]||DOC_TYPES.q;
+    return`<div class="h-row">
+      <span class="h-badge ${dt.cls}">${dt.th}</span>
+      <div class="h-info"><div class="h-num">${esc(h.doc_number)}</div><div class="h-sub">${esc(h.buyer_name)} · ${fmtDate(h.doc_date)}</div></div>
+      <div class="h-amt">฿${money(h.grand_total||0)}</div>
+      <div class="h-btns">
+        <button class="mbtn go" data-hload="${h.id}">เปิด</button>
+        <button class="mbtn" data-hconv="${h.id}">แปลง</button>
+        <button class="mbtn del" data-hdel="${h.id}">ลบ</button>
+      </div>
+    </div>`;
+  }).join('');
+  el.querySelectorAll('[data-hload]').forEach(b=>b.onclick=()=>{const e=historyList.find(h=>h.id===b.dataset.hload);if(e)loadFromHistory(e);});
+  el.querySelectorAll('[data-hconv]').forEach(b=>b.onclick=()=>openConvert(b.dataset.hconv));
+  el.querySelectorAll('[data-hdel]').forEach(b=>b.onclick=()=>deleteDoc(b.dataset.hdel));
+}
+
+function loadFromHistory(entry){
+  currentHistId=entry.id;docType=entry.doc_type;
+  buildDocTypeSelect();$('docType').value=docType;
+  const d=entry.data||{};
+  $('buyerName').value=d.buyerName||'';$('buyerBranch').value=d.buyerBranch||'';
+  $('buyerAddr').value=d.buyerAddr||'';$('buyerTaxId').value=d.buyerTaxId||'';$('buyerContact').value=d.buyerContact||'';
+  $('docNumber').value=entry.doc_number||'';$('docDate').value=d.docDate||todayISO();
+  $('docRef').value=d.docRef||'';$('docValid').value=d.docValid||'';$('docNote').value=d.docNote||'';
+  $('discType').value=d.discType||'percent';$('discValue').value=d.discValue||'';
+  $('vatRate').value=d.vatRate||'7';$('vatMode').value=d.vatMode||'exclude';
+  $('rcpMethod').value=d.rcpMethod||'เงินสด';$('rcpRef').value=d.rcpRef||'';
+  copyTag=d.copyTag||'ต้นฉบับ';
+  items=(d.items||[{qty:'1',unit:'',detail:'',price:''}]).map(i=>({...i}));
+  document.querySelectorAll('[data-copy]').forEach(c=>c.classList.toggle('on',c.dataset.copy===copyTag));
+  setDocType(docType);renderItems();closeModal('histOverlay');render();
+}
+
+function newDoc(confirm_=true){
+  if(confirm_&&!confirm('เริ่มเอกสารใหม่?'))return;
+  currentHistId=null;items=[{qty:'1',unit:'',detail:'',price:''}];
+  $('buyerName').value='';$('buyerBranch').value='';$('buyerAddr').value='';
+  $('buyerTaxId').value='';$('buyerContact').value='';
+  $('docNumber').value=numPreview(docType);
+  $('docDate').value=todayISO();$('docRef').value='';$('docValid').value='30';$('docNote').value='';
+  $('discValue').value='';$('vatRate').value='7';$('vatMode').value='exclude';
+  document.querySelectorAll('[data-copy]').forEach(c=>c.classList.toggle('on',c.dataset.copy==='ต้นฉบับ'));
+  copyTag='ต้นฉบับ';
+  renderItems();render();
+}
+
+/* ── Convert ────────────────────────────────── */
+function openConvert(id){
+  const entry=historyList.find(h=>h.id===id);if(!entry)return;
+  const converts=CONVERT_MAP[entry.doc_type]||[];
+  $('convTitle').textContent=`แปลงจาก ${DOC_TYPES[entry.doc_type]?.th} ${entry.doc_number}`;
+  $('convBody').innerHTML=converts.length
+    ?`<p style="color:var(--muted);font-size:13px;margin:0 0 12px">เลือกชนิดเอกสาร:</p>
+      <div class="conv-grid">${converts.map(t=>`<button class="conv-btn" data-ctype="${t}"><div>${DOC_TYPES[t].th}</div><small>${DOC_TYPES[t].en}</small></button>`).join('')}</div>`
+    :`<p style="color:var(--muted)">เอกสารนี้ไม่สามารถแปลงต่อได้</p>`;
+  $('convBody').querySelectorAll('[data-ctype]').forEach(b=>b.onclick=()=>{
+    const type=b.dataset.ctype;loadFromHistory(entry);
+    docType=type;buildDocTypeSelect();$('docType').value=type;
+    currentHistId=null;$('docNumber').value=numPreview(type);
+    $('docRef').value=entry.doc_number;setDocType(type);render();closeModal('convOverlay');
+  });
+  closeModal('histOverlay');openModal('convOverlay');
+}
+
+/* ── Settings ───────────────────────────────── */
+function renderSettings(){
+  $('setBody').innerHTML=`
+  <p class="sh">ข้อมูลผู้ขาย</p>
+  <div class="grid g2" style="margin-bottom:8px">
+    <div class="fld"><label>ชื่อกิจการ (ไทย)</label><input id="sName" value="${esc(seller.name)}"></div>
+    <div class="fld"><label>ชื่อภาษาอังกฤษ</label><input id="sNameEn" value="${esc(seller.nameEn)}"></div>
+  </div>
+  <div class="grid g2" style="margin-bottom:8px">
+    <div class="fld"><label>เลขประจำตัวผู้เสียภาษี</label><input id="sTaxId" value="${esc(seller.taxId)}"></div>
+    <div class="fld"><label>สาขา</label><input id="sBranch" value="${esc(seller.branch)}"></div>
+  </div>
+  <div class="fld" style="margin-bottom:8px"><label>ที่อยู่</label><textarea id="sAddr" rows="2">${esc(seller.address)}</textarea></div>
+  <div class="grid g3" style="margin-bottom:8px">
+    <div class="fld"><label>โทรศัพท์</label><input id="sPhone" value="${esc(seller.phone)}"></div>
+    <div class="fld"><label>แฟกซ์</label><input id="sFax" value="${esc(seller.fax||'')}"></div>
+    <div class="fld"><label>อีเมล</label><input id="sEmail" value="${esc(seller.email||'')}"></div>
+  </div>
+  <p class="sh">บัญชีธนาคาร</p>
+  <div class="grid g3" style="margin-bottom:8px">
+    <div class="fld"><label>ธนาคาร</label><input id="sBank" value="${esc(seller.bank||'')}"></div>
+    <div class="fld"><label>เลขบัญชี</label><input id="sAccNo" value="${esc(seller.accountNo||'')}"></div>
+    <div class="fld"><label>ชื่อบัญชี</label><input id="sAccName" value="${esc(seller.accountName||'')}"></div>
+  </div>
+  <p class="sh">ลายเซ็น</p>
+  <div class="grid g2" style="margin-bottom:8px">
+    <div class="fld"><label>ชื่อผู้ลงนาม</label><input id="sSignName" value="${esc(seller.signName||'')}"></div>
+    <div class="fld"><label>ตำแหน่ง</label><input id="sSignRole" value="${esc(seller.signRole||'ผู้มีอำนาจลงนาม')}"></div>
+  </div>
+  <p class="sh">การกำหนดเลขที่เอกสาร</p>
+  <div class="num-grid">
+    <div class="ng-head"><span>ชนิด</span><span>Prefix</span><span>หลัก</span><span>เลขถัดไป</span><span>ตัวอย่าง</span></div>
+    ${Object.entries(DOC_TYPES).map(([k,v])=>{const n=numbering[k]||{prefix:k.toUpperCase(),next:1,pad:4};
+      return`<div class="ng-row"><span>${v.th}</span>
+        <input class="nf" data-t="${k}" data-f="prefix" value="${n.prefix}">
+        <input class="nf" data-t="${k}" data-f="pad" type="number" min="1" max="8" value="${n.pad}">
+        <input class="nf" data-t="${k}" data-f="next" type="number" min="1" value="${n.next}">
+        <span class="nprev" id="nprev_${k}">${numPreview(k)}</span>
+      </div>`;}).join('')}
+  </div>
+  <div style="margin-top:14px;display:flex;gap:8px;align-items:center">
+    <button class="btn primary" id="saveSet" style="background:var(--brand);color:#fff;border-color:var(--brand)">💾 บันทึกการตั้งค่า</button>
+    <span id="setMsg" style="font-size:12.5px;color:var(--ok)"></span>
+  </div>`;
+
+  $('setBody').querySelectorAll('.nf').forEach(inp=>{
+    inp.oninput=()=>{
+      const t=inp.dataset.t,f=inp.dataset.f;
+      if(!numbering[t])numbering[t]={prefix:t.toUpperCase(),next:1,pad:4};
+      numbering[t][f]=f==='next'||f==='pad'?parseInt(inp.value)||1:inp.value;
+      const pv=$(`nprev_${t}`);if(pv)pv.textContent=numPreview(t);
+    };
+  });
+  $('saveSet').onclick=async()=>{
+    seller.name=$('sName').value;seller.nameEn=$('sNameEn').value;
+    seller.taxId=$('sTaxId').value;seller.branch=$('sBranch').value;
+    seller.address=$('sAddr').value;seller.phone=$('sPhone').value;
+    seller.fax=$('sFax').value;seller.email=$('sEmail').value;
+    seller.bank=$('sBank').value;seller.accountNo=$('sAccNo').value;
+    seller.accountName=$('sAccName').value;
+    seller.signName=$('sSignName').value;seller.signRole=$('sSignRole').value;
+    saveSeller();
+    await saveNumberingToDB();
+    $('setMsg').textContent='บันทึกแล้ว ✓';
+    setTimeout(()=>{$('setMsg').textContent='';},2500);
+    closeModal('setOverlay');render();toast('บันทึกการตั้งค่าแล้ว');
+  };
+}
+
+/* ── Modals ─────────────────────────────────── */
+function openModal(id){$(id).classList.add('show');}
+function closeModal(id){$(id).classList.remove('show');}
+document.addEventListener('click',e=>{
+  const c=e.target.dataset.close;if(c)closeModal(c);
+  if(e.target.classList.contains('overlay'))closeModal(e.target.id);
+});
+
+/* ── Zoom ───────────────────────────────────── */
+function applyZoom(){const z=parseFloat($('zoom').value)||0.75;$('scaler').style.transform=`scale(${z})`;$('scaler').style.marginBottom=`-${(1-z)*297*3.78}px`;}
+$('zoom').onchange=applyZoom;
+
+/* ── Init ───────────────────────────────────── */
+async function init(){
+  loadSeller();
+  numbering=defaultNum();
+  // Load data from Supabase if available
+  if(window._sbOk){
+    setDB(true);
+    await loadNumberingFromDB();
+    if(window._sbHistory){
+      historyList=window._sbHistory;
+    }
+    if(window._sbCustomers)customers=window._sbCustomers;
+    if(window._sbProducts)products=window._sbProducts;
+  } else {
+    setDB(false);
+    // localStorage fallback
+    try{const h=localStorage.getItem('topg_hist');if(h)historyList=JSON.parse(h);}catch(e){}
+  }
+
+  buildDocTypeSelect();
+  $('docType').onchange=()=>setDocType($('docType').value);
+  $('addItem').onclick=()=>{items.push({qty:'1',unit:'',detail:'',price:''});renderItems();};
+  $('btnSave').onclick=()=>saveDoc(false);
+  $('btnPrint').onclick=()=>saveDoc(true);
+  $('btnNew').onclick=()=>newDoc(true);
+  $('btnHistory').onclick=()=>{renderHistory();openModal('histOverlay');};
+  $('histSearch').oninput=e=>renderHistory(e.target.value);
+  $('histFilter').querySelectorAll('[data-ft]').forEach(tag=>{
+    tag.onclick=()=>{
+      $('histFilter').querySelectorAll('[data-ft]').forEach(t=>t.classList.remove('on'));
+      tag.classList.add('on');histTypeFilter=tag.dataset.ft;renderHistory($('histSearch').value);
+    };
+  });
+  $('btnSettings').onclick=()=>{renderSettings();openModal('setOverlay');};
+
+  ['discType','discValue','vatRate','vatMode','rcpMethod','rcpRef',
+   'buyerAddr','buyerBranch','buyerTaxId','buyerContact',
+   'docDate','docRef','docValid','docNote'].forEach(id=>{const el=$(id);if(el)el.oninput=render;});
+
+  document.querySelectorAll('[data-copy]').forEach(ch=>{
+    ch.onclick=()=>{
+      document.querySelectorAll('[data-copy]').forEach(c=>c.classList.remove('on'));
+      ch.classList.add('on');copyTag=ch.dataset.copy;render();
+    };
+  });
+
+  setupCustAc();
+  updateHistCount();applyZoom();
+  setDocType('q');newDoc(false);renderItems();
+}
+
+window._initDocs=init;
+if(window._sbLoaded||document.readyState==='complete')init();
+else document.addEventListener('DOMContentLoaded',()=>{if(!window._sbLoaded)setTimeout(init,1500);});
+</script>
+</body>
+</html>
