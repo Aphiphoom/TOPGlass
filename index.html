@@ -229,6 +229,7 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;'
 const el=h=>{const d=document.createElement('div');d.innerHTML=h.trim();return d.firstChild;};
 const now8=id=>String(id).slice(-8).toUpperCase();
 const catInfo=id=>categories.find(c=>c.id===id)||{id:'other',label:'อื่นๆ',color:'other'};
+function fmtDateTH(iso){if(!iso)return'';const d=new Date(iso+'T00:00:00');const M=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];return d.getDate()+' '+M[d.getMonth()]+' '+(d.getFullYear()+543);}
 function dateLabel(iso){const d=new Date(iso);return d.toLocaleDateString('th-TH',{year:'numeric',month:'2-digit',day:'2-digit'})+' '+d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});}
 function setDBStatus(ok){document.getElementById('dbDot').className='status-dot'+(ok?'':' offline');}
 function showSpinner(){document.getElementById('loadingOverlay').style.display='flex';}
