@@ -390,9 +390,18 @@ function renderPOS(m){
         <input id="discInp" type="text" inputmode="decimal" value="${discAmt||''}" placeholder="0">
         <select id="discTypeSel"><option value="amount" ${discType==='amount'?'selected':''}>บาท</option><option value="percent" ${discType==='percent'?'selected':''}> %</option></select>
       </div>
+      <div class="disc-row">
+        <label>VAT</label>
+        <select id="vatModeSel" style="flex:1;font-size:13px;">
+          <option value="none" ${vatMode==='none'?'selected':''}>ไม่มี VAT</option>
+          <option value="exclude" ${vatMode==='exclude'?'selected':''}>คิด VAT 7% เพิ่ม</option>
+          <option value="include" ${vatMode==='include'?'selected':''}>ราคารวม VAT 7% แล้ว</option>
+        </select>
+      </div>
       <div class="totals">
         <div class="line"><span>ยอดรวม</span><span id="tSub">฿0.00</span></div>
         <div class="line"><span>ส่วนลด</span><span id="tDisc" style="color:var(--red)">-฿0.00</span></div>
+        <div class="line" id="tVatLine" style="display:none;"><span id="tVatLbl">VAT 7%</span><span id="tVat">฿0.00</span></div>
         <div class="line grand"><span>สุทธิ</span><span id="tGrand">฿0.00</span></div>
       </div>
       <div class="pay-method">
@@ -424,7 +433,7 @@ function renderPOS(m){
   document.getElementById('custSel').onchange=e=>{selCustomer=e.target.value;updatePosTotals();};
   document.getElementById('discInp').oninput=e=>{e.target.value=cleanNum(e.target.value);discAmt=Number(e.target.value)||0;updatePosTotals();};
   document.getElementById('paidInp').oninput=e=>{e.target.value=cleanNum(e.target.value);paidStr=e.target.value;updatePosTotals();};
-  document.getElementById('vatModeSel').onchange=e=>{vatMode=e.target.value;updatePosTotals();};
+  const vmSel=document.getElementById('vatModeSel');if(vmSel)vmSel.onchange=e=>{vatMode=e.target.value;updatePosTotals();};
   m.querySelectorAll('.pay-method button').forEach(b=>b.onclick=()=>{payMethod=b.dataset.pm;renderPOS(m);});
   document.getElementById('clearBtn').onclick=()=>{if(confirm('ล้างตะกร้า?')){cart=[];discAmt=0;paidStr='';payMethod='cash';renderPOS(m);}};
   document.getElementById('checkoutBtn').onclick=confirmSale;
