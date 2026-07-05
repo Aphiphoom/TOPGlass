@@ -218,6 +218,7 @@ let settings={shop_name:'',address:'',phone:'',tax_id:'',low_stock_threshold:5};
 let cart=[], selCustomer=null, currentTab='pos';
 let searchTerm='', catFilter='all';
 let discAmt=0, discType='amount', paidStr='', payMethod='cash';
+let vatMode='none', vatRate=7;
 let settingsSub='shop'; // sub-tab in settings
 
 // ═══════════════════════════════════════════
@@ -423,6 +424,7 @@ function renderPOS(m){
   document.getElementById('custSel').onchange=e=>{selCustomer=e.target.value;updatePosTotals();};
   document.getElementById('discInp').oninput=e=>{e.target.value=cleanNum(e.target.value);discAmt=Number(e.target.value)||0;updatePosTotals();};
   document.getElementById('paidInp').oninput=e=>{e.target.value=cleanNum(e.target.value);paidStr=e.target.value;updatePosTotals();};
+  document.getElementById('vatModeSel').onchange=e=>{vatMode=e.target.value;updatePosTotals();};
   m.querySelectorAll('.pay-method button').forEach(b=>b.onclick=()=>{payMethod=b.dataset.pm;renderPOS(m);});
   document.getElementById('clearBtn').onclick=()=>{if(confirm('ล้างตะกร้า?')){cart=[];discAmt=0;paidStr='';payMethod='cash';renderPOS(m);}};
   document.getElementById('checkoutBtn').onclick=confirmSale;
