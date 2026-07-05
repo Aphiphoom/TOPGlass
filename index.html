@@ -604,7 +604,7 @@ async function confirmSale(){
             rcpMethod:payMethod==='cash'?'เงินสด':'เครดิต/ลงบิล',
             rcpRef:'',discType:'amount',
             discValue:String(t.discVal),
-            vatRate:'0',vatMode:'none',copyTag:'ต้นฉบับ',
+            vatRate:String(vatRate),vatMode,copyTag:'ต้นฉบับ',
             docNote:payMethod==='credit'&&debtToAdd>0?`ค้างชำระ ฿${money(debtToAdd)}`:'',
             items:cart.map(it=>({qty:String(it.qty),unit:it.unit,detail:it.product_name,price:String(it.price)})),
           }
@@ -613,35 +613,105 @@ async function confirmSale(){
       }
     }catch(re){console.warn('Auto-receipt:',re.message);}
 
-    cart=[];discAmt=0;paidStr='';payMethod='cash';
-    hideSpinner();render();showReceipt(sale,items);
+    const saleVatInfo={vat:t.vat,vatMode,vatRate};
+    cart=[];discAmt=0;paidStr='';payMethod='cash';vatMode='none';
+    hideSpinner();render();showReceipt(sale,items,saleVatInfo);
   }catch(e){hideSpinner();showToast('ผิดพลาด: '+e.message,'error');}
 }
 
-function showReceipt(sale,items){
+function showReceipt(sale,items,saleVat){
   const isCredit=sale.payment_method==='credit';
-  const rows=items.map(it=>`<div>${esc(it.product_name)}</div><div class="rline"><span>${it.qty} ${esc(it.unit)} × ${money(it.price)}</span><span>฿${money(it.qty*it.price)}</span></div>`).join('');
-  const html=`<div class="receipt">
-    <div class="rcenter" style="font-weight:700;font-size:14px;">${esc(settings.shop_name)}</div>
-    ${settings.address?`<div class="rcenter small">${esc(settings.address)}</div>`:''}
-    ${settings.phone?`<div class="rcenter small">โทร ${esc(settings.phone)}</div>`:''}
-    ${settings.tax_id?`<div class="rcenter small">เลขภาษี ${esc(settings.tax_id)}</div>`:''}
-    <hr><div class="rline"><span>เลขที่</span><span>${now8(sale.id)}</span></div>
-    <div class="rline"><span>วันที่</span><span>${dateLabel(sale.sale_date||sale.created_at)}</span></div>
-    <div class="rline"><span>ลูกค้า</span><span>${esc(sale.customer_name)}</span></div>
-    <div class="rline"><span>ชำระ</span><span>${isCredit?'📒 บันทึกหนี้':'💵 เงินสด'}</span></div>
-    <hr>${rows}<hr>
-    <div class="rline"><span>ยอดรวม</span><span>฿${money(sale.subtotal)}</span></div>
-    <div class="rline"><span>ส่วนลด</span><span>฿${money(sale.discount)}</span></div>
-    <div class="rline" style="font-weight:700;font-size:14px;"><span>สุทธิ</span><span>฿${money(sale.total)}</span></div>
-    <div class="rline"><span>รับเงิน</span><span>฿${money(sale.paid)}</span></div>
-    ${isCredit?`<div class="rline" style="font-weight:700;"><span>ค้างชำระ</span><span>฿${money(sale.debt_amount||0)}</span></div>`:`<div class="rline"><span>เงินทอน</span><span>฿${money(sale.change_amount||0)}</span></div>`}
-    <hr><div class="rcenter">ขอบคุณที่ใช้บริการ 🙏</div>
+  const vat=saleVat||{vat:0,vatMode:'none',vatRate:7};
+  const base=sale.total-(vat.vatMode==='exclude'?vat.vat:0);
+  const saleDate=new Date(sale.sale_date||sale.created_at).toISOString().slice(0,10);
+  const cust=customers.find(c=>c.id===sale.customer_id)||{name:sale.customer_name,address:'',phone:''};
+
+  const itemRows=items.map((it,i)=>`
+    <tr>
+      <td class="rcp-tc">${i+1}</td>
+      <td><div class="rcp-it-name">${esc(it.product_name)}</div></td>
+      <td class="rcp-tr">${it.qty}</td>
+      <td>${esc(it.unit)}</td>
+      <td class="rcp-tr">${money(it.price)}</td>
+      <td class="rcp-tr">${money(it.qty*it.price)}</td>
+    </tr>`).join('');
+
+  const vatLabel=vat.vatMode==='include'?`VAT ${vat.vatRate}% (รวมแล้ว)`:vat.vatMode==='exclude'?`VAT ${vat.vatRate}%`:'';
+
+  const sheet=`<div class="rcp-sheet" id="rcpPrintArea">
+    <div class="rcp-head">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <div class="rcp-logo">TOP<br>GLASS</div>
+        <div>
+          <div class="rcp-seller-name">${esc(settings.shop_name||'ห้างหุ้นส่วนจำกัด ที.โอ.พี.กลาส')}</div>
+          <div class="rcp-seller-sub">T.O.P. GLASS LIMITED PARTNERSHIP</div>
+          <div class="rcp-seller-meta">${[settings.address&&esc(settings.address),settings.phone&&'โทร '+esc(settings.phone),settings.tax_id&&'เลขผู้เสียภาษี '+esc(settings.tax_id)].filter(Boolean).join(' &nbsp;|&nbsp; ')}</div>
+        </div>
+      </div>
+      <div class="rcp-copy-tag">ต้นฉบับ</div>
+    </div>
+    <div class="rcp-title-box">
+      <div class="rcp-title-th">ใบเสร็จรับเงิน</div>
+      <div class="rcp-title-en">RECEIPT</div>
+    </div>
+    <div class="rcp-parties">
+      <div class="rcp-buyer">
+        <div><span class="k">ลูกค้า</span><span class="v">${esc(cust.name)||'&nbsp;'}</span></div>
+        ${cust.address?`<div><span class="k">ที่อยู่</span><span>${esc(cust.address)}</span></div>`:''}
+        ${cust.phone?`<div><span class="k">โทร</span><span>${esc(cust.phone)}</span></div>`:''}
+        <div><span class="k">วิธีชำระ</span><span class="v">${isCredit?'บันทึกหนี้':'เงินสด'}</span></div>
+      </div>
+      <div class="rcp-docinfo">
+        <div class="dr"><span class="k">เลขที่</span><span class="v">${esc(sale.doc_number||'RCP-'+now8(sale.id))}</span></div>
+        <div class="dr"><span class="k">วันที่</span><span class="v">${fmtDateTH(saleDate)}</span></div>
+        <div class="dr"><span class="k">อ้างอิง</span><span class="v">POS#${now8(sale.id)}</span></div>
+      </div>
+    </div>
+    <table class="rcp-table">
+      <colgroup><col style="width:34px"><col><col style="width:60px"><col style="width:50px"><col style="width:84px"><col style="width:88px"></colgroup>
+      <thead><tr>
+        <th class="rcp-tc">ลำดับ</th><th>รายละเอียดสินค้า / บริการ</th>
+        <th class="rcp-tr">จำนวน</th><th>หน่วย</th>
+        <th class="rcp-tr">ราคา/หน่วย</th><th class="rcp-tr">จำนวนเงิน</th>
+      </tr></thead>
+      <tbody>${itemRows}<tr class="rcp-grow"><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody>
+    </table>
+    <div class="rcp-below">
+      <div class="rcp-below-left">
+        <div class="rcp-words">${bahtText(sale.total)}</div>
+        ${sale.paid?`<div class="rcp-payrow"><span class="k">รับเงิน</span> ฿${money(sale.paid)} &nbsp;
+          <span class="k">เงินทอน</span> ฿${money(sale.change_amount||0)}</div>`:''}
+        ${isCredit&&(sale.debt_amount||0)>0?`<div class="rcp-payrow"><span class="k">ค้างชำระ</span> ฿${money(sale.debt_amount)}</div>`:''}
+      </div>
+      <div class="rcp-sumbox">
+        <div class="rcp-srow"><span class="k">ยอดรวม</span><span class="v">฿${money(sale.subtotal)}</span></div>
+        <div class="rcp-srow"><span class="k">ส่วนลด</span><span class="v">฿${money(sale.discount||0)}</span></div>
+        <div class="rcp-srow"><span class="k">ยอดหลังหักส่วนลด</span><span class="v">฿${money(sale.subtotal-(sale.discount||0))}</span></div>
+        ${vat.vat>0?`<div class="rcp-srow"><span class="k">${vatLabel}</span><span class="v">฿${money(vat.vat)}</span></div>`:''}
+        <div class="rcp-srow grand"><span class="k">ยอดรวมสุทธิ<small>GRAND TOTAL</small></span><span class="v">฿${money(sale.total)}</span></div>
+      </div>
+    </div>
+    <div class="rcp-footer">
+      <div class="rcp-sigs">
+        <div class="rcp-sign"><div class="sl"></div><div class="role">ผู้รับสินค้า / ลูกค้า</div></div>
+        <div class="rcp-sign"><div class="sl"></div><div class="role">ผู้มีอำนาจลงนาม</div></div>
+      </div>
+    </div>
   </div>`;
-  const bg=el(`<div class="modal-bg"><div class="modal">${html}<div class="flex-end"><button class="btn gray" id="closeR">ปิด</button><button class="btn" id="printR">🖨 พิมพ์</button></div></div></div>`);
+
+  const bg=el(`<div class="modal-bg"><div class="modal" style="max-width:240mm;padding:0;overflow:hidden;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);">
+      <span style="font-weight:700;font-size:15px;color:var(--primary-dark);">🧾 ใบเสร็จรับเงิน</span>
+      <div style="display:flex;gap:8px;">
+        <button class="btn gray btn-sm" id="closeR">ปิด</button>
+        <button class="btn btn-sm" id="printR">🖨 พิมพ์ A4</button>
+      </div>
+    </div>
+    <div class="rcp-modal-body">${sheet}</div>
+  </div></div>`);
   document.body.appendChild(bg);
   bg.querySelector('#closeR').onclick=()=>bg.remove();
-  bg.querySelector('#printR').onclick=()=>{const pa=document.getElementById('printArea');pa.innerHTML=html;pa.style.display='block';window.print();pa.style.display='none';};
+  bg.querySelector('#printR').onclick=()=>window.print();
 }
 
 // ═══════════════════════════════════════════
