@@ -655,13 +655,18 @@ function showReceipt(sale,items,_vatInfo){
     </div>
     <div style="display:flex;gap:8px;">
       <button class="btn gray" id="closeR" style="flex:1;">ปิด</button>
-      <a id="openRcp" href="documents.html" class="btn" style="flex:2;text-decoration:none;justify-content:center;">📄 ดูและพิมพ์ใบเสร็จ</a>
+      <button class="btn" id="openRcp" style="flex:2;">🖨️ พิมพ์ใบเสร็จ</button>
     </div>
   </div></div>`);
   document.body.appendChild(bg);
   bg.querySelector('#closeR').onclick=()=>bg.remove();
-  if(sale.receipt_doc_id)
-    bg.querySelector('#openRcp').href=`documents.html?id=${sale.receipt_doc_id}`;
+  bg.querySelector('#openRcp').onclick=()=>{
+    const url=sale.receipt_doc_id
+      ?`documents.html?id=${sale.receipt_doc_id}&print=1`
+      :'documents.html';
+    window.open(url,'_blank','width=960,height=1100,menubar=no,toolbar=no,location=no,status=no');
+    bg.remove();
+  };
 }
 
 function renderProducts(m){
