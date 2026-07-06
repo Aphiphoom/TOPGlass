@@ -988,17 +988,19 @@ async function init(){
   updateHistCount();applyZoom();
 
   // โหลดเอกสารจาก URL parameter ?id=...
-  const _urlId=new URLSearchParams(window.location.search).get('id');
+  const _params=new URLSearchParams(window.location.search);
+  const _urlId=_params.get('id');
+  const _autoPrint=_params.get('print')==='1';
+  function _afterLoad(){if(_autoPrint)setTimeout(()=>window.print(),600);}
   if(_urlId){
     const _entry=historyList.find(h=>h.id===_urlId);
-    if(_entry){loadFromHistory(_entry);}
+    if(_entry){loadFromHistory(_entry);_afterLoad();}
     else if(sb()){
-      // โหลดจาก Supabase ถ้าไม่มีใน local cache
       sb().from('documents').select('*').eq('id',_urlId).single().then(({data,error})=>{
-        if(!error&&data) loadFromHistory(data);
+        if(!error&&data){loadFromHistory(data);_afterLoad();}
         else{setDocType('q');newDoc(false);renderItems();}
       });
-      return; // รอ async
+      return;
     }
   } else {
     setDocType('q');newDoc(false);renderItems();
