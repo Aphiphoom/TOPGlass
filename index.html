@@ -660,18 +660,168 @@ function showReceipt(sale,items,_vatInfo){
     </div>
     <div style="display:flex;gap:8px;">
       <button class="btn gray" id="closeR" style="flex:1;">ปิด</button>
-      <button class="btn" id="openRcp" style="flex:2;">🖨️ พิมพ์ใบเสร็จ</button>
+      <button class="btn" id="printR" style="flex:2;">🖨️ พิมพ์ใบเสร็จ</button>
     </div>
   </div></div>`);
   document.body.appendChild(bg);
   bg.querySelector('#closeR').onclick=()=>bg.remove();
-  bg.querySelector('#openRcp').onclick=()=>{
-    const url=sale.receipt_doc_id
-      ?`documents.html?id=${sale.receipt_doc_id}&print=1&minimal=1`
-      :'documents.html?print=1&minimal=1';
-    window.open(url,'_blank','width=820,height=1100,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes');
+  bg.querySelector('#printR').onclick=()=>{
     bg.remove();
+    openReceiptPrint(sale,items);
   };
+}
+
+// ── สร้างหน้าพิมพ์ standalone ──
+function openReceiptPrint(sale,items){
+  const TH_ONES=['','หนึ่ง','สอง','สาม','สี่','ห้า','หก','เจ็ด','แปด','เก้า'];
+  const TH_TENS=['','สิบ','ยี่สิบ','สามสิบ','สี่สิบ','ห้าสิบ','หกสิบ','เจ็ดสิบ','แปดสิบ','เก้าสิบ'];
+  function _thNum(n){if(n<=0)return'ศูนย์';let r='',m=Math.floor(n);const K=Math.floor(m/1000);if(K)r+=_thNum(K)+'พัน';const H=Math.floor((m%1000)/100);if(H)r+=TH_ONES[H]+'ร้อย';const T=Math.floor((m%100)/10);if(T)r+=TH_TENS[T];const O=m%10;if(O){if(T===1&&O===1)r+='เอ็ด';else r+=TH_ONES[O];}return r;}
+  function _baht(v){const n=Math.round(v*100);const b=Math.floor(n/100),s=n%100;let r=(b>0?_thNum(b):'ศูนย์')+'บาท';if(s){const d=Math.floor(s/10),u=s%10;r+=TH_TENS[d]+(u?TH_ONES[u]:'')+'สตางค์';}else r+='ถ้วน';return r;}
+  function _dateTH(iso){const d=new Date((iso||'').slice(0,10)+'T12:00:00');const M=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];return isNaN(d)?'':`${d.getDate()} ${M[d.getMonth()]} ${d.getFullYear()+543}`;}
+  function _esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function _m(n){return(Number(n)||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+  const cust=customers.find(c=>c.id===sale.customer_id)||{name:sale.customer_name,address:'',phone:''};
+  const sDate=(sale.sale_date||sale.created_at||'').slice(0,10);
+  const rcpNum=sale.doc_number||('RCP-'+String(sale.id||'').slice(-8).toUpperCase());
+  const isCredit=sale.payment_method==='credit';
+
+  const itemRows=items.map((it,i)=>`
+  <tr>
+    <td style="text-align:center;border:1px solid #c2ccd8;padding:6px;">${i+1}</td>
+    <td style="border:1px solid #c2ccd8;padding:6px;font-weight:600;">${_esc(it.product_name)}</td>
+    <td style="text-align:right;border:1px solid #c2ccd8;padding:6px;">${_m(it.qty)}</td>
+    <td style="border:1px solid #c2ccd8;padding:6px;">${_esc(it.unit)}</td>
+    <td style="text-align:right;border:1px solid #c2ccd8;padding:6px;">${_m(it.price)}</td>
+    <td style="text-align:right;border:1px solid #c2ccd8;padding:6px;">${_m(it.qty*it.price)}</td>
+  </tr>`).join('');
+
+  const S=settings;
+  const html=`<!DOCTYPE html>
+<html lang="th"><head><meta charset="UTF-8"><title>ใบเสร็จรับเงิน ${rcpNum}</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Sarabun',Tahoma,sans-serif;background:#fff;color:#14263d;}
+@page{size:A4;margin:10mm 12mm;}
+@media print{body{margin:0;}}
+.sheet{width:100%;max-width:186mm;margin:0 auto;padding:6mm 0;font-size:13px;}
+.head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.logo{width:68px;height:68px;background:#1e3a8a;color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;text-align:center;flex:none;margin-right:10px;}
+.sname{font-size:18px;font-weight:800;line-height:1.2;}
+.ssub{font-size:10px;color:#6c7c8e;font-weight:600;}
+.smeta{font-size:11px;color:#3a516b;line-height:1.7;margin-top:3px;}
+.copy-tag{border:1px solid #14263d;border-radius:5px;padding:3px 9px;font-size:11px;font-weight:700;}
+.title-box{text-align:center;border:1.5px solid #1e3a8a;border-radius:8px;padding:7px 28px;display:inline-block;margin:10px auto;display:block;width:fit-content;margin:10px auto;}
+.title-th{font-size:20px;font-weight:800;color:#1e3a8a;}
+.title-en{font-size:10px;font-weight:600;color:#6c7c8e;letter-spacing:1px;}
+.parties{display:flex;gap:12px;margin-bottom:8px;}
+.buyer{flex:1;border:1px solid #b9c4d2;border-radius:6px;padding:8px 10px;font-size:12px;line-height:1.7;}
+.buyer .k{color:#6c7c8e;font-weight:700;display:inline-block;min-width:88px;}
+.buyer .v{font-weight:700;}
+.dinfo{width:200px;border:1px solid #b9c4d2;border-radius:6px;overflow:hidden;font-size:12px;}
+.dr{display:flex;justify-content:space-between;padding:5px 9px;border-bottom:1px solid #e4e9f0;}
+.dr:last-child{border-bottom:none;}
+.dr .k{color:#6c7c8e;font-weight:700;}
+.dr .v{font-weight:800;color:#1e3a8a;}
+table.items{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px;}
+table.items th{background:#1e3a8a;color:#fff;padding:7px;border:1px solid #1d4ed8;font-size:11.5px;}
+table.items td{border:1px solid #b9c4d2;padding:6px 7px;vertical-align:top;}
+.tr{text-align:right;}.tc{text-align:center;}
+.below{display:flex;margin-top:0;}
+.bleft{flex:1;border:1px solid #b9c4d2;border-right:none;padding:9px 11px;font-size:11.5px;}
+.words{font-weight:700;color:#1e3a8a;font-size:12.5px;border-bottom:1px dashed #b9c4d2;padding-bottom:6px;margin-bottom:7px;}
+.payrow{line-height:1.9;font-size:11.5px;}.payrow .k{color:#6c7c8e;font-weight:700;}
+.sbox{width:240px;border:1px solid #b9c4d2;}
+.srow{display:flex;justify-content:space-between;padding:6px 10px;border-bottom:1px solid #e4e9f0;font-size:12px;}
+.srow:last-child{border-bottom:none;}
+.srow .k{color:#3a516b;}
+.srow .v{font-weight:700;}
+.grand{background:#1e3a8a;color:#fff;}
+.grand .k,.grand .v{color:#fff;}
+.grand .v{font-size:14px;}
+.sigs{display:flex;justify-content:flex-end;gap:26px;padding-top:16px;}
+.sign{width:190px;text-align:center;font-size:11px;}
+.sign .sl{border-bottom:1px dotted #6c7c8e;height:38px;margin-bottom:5px;}
+.sign .role{color:#6c7c8e;font-weight:700;}
+</style></head>
+<body>
+<div class="sheet">
+  <div class="head">
+    <div style="display:flex;align-items:flex-start;">
+      <div class="logo">TOP<br>GLASS</div>
+      <div>
+        <div class="sname">${_esc(S.shop_name||'ห้างหุ้นส่วนจำกัด ที.โอ.พี.กลาส')}</div>
+        <div class="ssub">T.O.P. GLASS LIMITED PARTNERSHIP</div>
+        <div class="smeta">${[S.address&&_esc(S.address),S.phone&&'โทร '+_esc(S.phone),S.tax_id&&'เลขผู้เสียภาษี '+_esc(S.tax_id)+' สำนักงานใหญ่'].filter(Boolean).join(' &nbsp;|&nbsp; ')}</div>
+      </div>
+    </div>
+    <div class="copy-tag">ต้นฉบับ</div>
+  </div>
+
+  <div style="text-align:center;margin:10px 0;">
+    <div class="title-box">
+      <div class="title-th">ใบเสร็จรับเงิน</div>
+      <div class="title-en">RECEIPT</div>
+    </div>
+  </div>
+
+  <div class="parties">
+    <div class="buyer">
+      <div><span class="k">ลูกค้า</span><span class="v">${_esc(cust.name)||'&nbsp;'}</span></div>
+      ${cust.address?`<div><span class="k">ที่อยู่</span>${_esc(cust.address)}</div>`:''}
+      ${cust.phone?`<div><span class="k">โทร</span>${_esc(cust.phone)}</div>`:''}
+      <div><span class="k">วิธีชำระ</span><span class="v">${isCredit?'บันทึกหนี้':'เงินสด'}</span></div>
+    </div>
+    <div class="dinfo">
+      <div class="dr"><span class="k">เลขที่</span><span class="v">${_esc(rcpNum)}</span></div>
+      <div class="dr"><span class="k">วันที่</span><span class="v">${_dateTH(sDate)}</span></div>
+      <div class="dr"><span class="k">อ้างอิง</span><span class="v">POS#${String(sale.id||'').slice(-8).toUpperCase()}</span></div>
+      <div class="dr"><span class="k">ผู้ขาย</span><span class="v">ที.โอ.พี.กลาส</span></div>
+    </div>
+  </div>
+
+  <table class="items">
+    <colgroup><col style="width:36px"><col><col style="width:62px"><col style="width:50px"><col style="width:84px"><col style="width:88px"></colgroup>
+    <thead><tr>
+      <th class="tc">ลำดับ</th><th>รายละเอียดสินค้า / บริการ</th>
+      <th class="tr">จำนวน</th><th>หน่วย</th>
+      <th class="tr">ราคา/หน่วย</th><th class="tr">จำนวนเงิน</th>
+    </tr></thead>
+    <tbody>${itemRows}
+    <tr style="height:24px;"><td style="border:1px solid #b9c4d2;"></td><td style="border:1px solid #b9c4d2;"></td><td style="border:1px solid #b9c4d2;"></td><td style="border:1px solid #b9c4d2;"></td><td style="border:1px solid #b9c4d2;"></td><td style="border:1px solid #b9c4d2;"></td></tr>
+    </tbody>
+  </table>
+
+  <div class="below">
+    <div class="bleft">
+      <div class="words">${_baht(sale.total)}</div>
+      <div class="payrow">
+        ${!isCredit&&sale.paid?`<span class="k">รับเงิน</span> ฿${_m(sale.paid)} &nbsp; <span class="k">เงินทอน</span> ฿${_m(sale.change_amount||0)}<br>`:''}
+        ${isCredit&&(sale.debt_amount||0)>0?`<span class="k">ค้างชำระ</span> ฿${_m(sale.debt_amount)}<br>`:''}
+      </div>
+    </div>
+    <div class="sbox">
+      <div class="srow"><span class="k">ยอดรวม</span><span class="v">฿${_m(sale.subtotal)}</span></div>
+      <div class="srow"><span class="k">ส่วนลด</span><span class="v">฿${_m(sale.discount||0)}</span></div>
+      <div class="srow"><span class="k">ยอดหลังหักส่วนลด</span><span class="v">฿${_m(sale.subtotal-(sale.discount||0))}</span></div>
+      <div class="srow grand"><span class="k">ยอดรวมสุทธิ</span><span class="v">฿${_m(sale.total)}</span></div>
+    </div>
+  </div>
+
+  <div class="sigs">
+    <div class="sign"><div class="sl"></div><div class="role">ผู้รับสินค้า / ลูกค้า</div></div>
+    <div class="sign"><div class="sl"></div><div class="role">ผู้มีอำนาจลงนาม</div></div>
+  </div>
+</div>
+<script>window.addEventListener('load',function(){setTimeout(function(){window.print();},400);});<\/script>
+</body></html>`;
+
+  const win=window.open('','_blank','width=820,height=1050,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes');
+  if(!win){alert('กรุณาอนุญาต Pop-up สำหรับเว็บนี้แล้วลองใหม่');return;}
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
 }
 
 function renderProducts(m){
