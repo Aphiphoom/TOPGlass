@@ -1,3 +1,101 @@
+
+/
+Claude finished the response
+
+Investigated undefined function reference in code
+Investigated undefined function reference in code
+แก้แล้วครับ — ฟังก์ชัน fmtDateTH (แปลงวันที่เป็นภาษาไทย เช่น "3 กรกฎาคม 2569") หลุดหายไประหว่างการแก้รอบก่อน เพิ่มกลับเข้าไปแล้ว
+
+VAT selector แสดงแล้ว และการยืนยันการขายควรทำงานได้ปกติครับ
+
+
+Index
+Code · HTML 
+1783227361726_image.png
+ตอนนี้การสร้างหน้าใบเสร็จแบบ A4 คือการพยายามสร้างใหม่ หรือไปดึงหน้าเอกสารมาจากหน้า"เอกสาร" ที่มีการสร้างและบันทึกใว้อยู่แล้ว
+
+
+วิเคราะห์การออกแบบและเลือกใช้เอกสารที่บันทึกไว้แล้ว
+วิเคราะห์การออกแบบและเลือกใช้เอกสารที่บันทึกไว้แล้ว
+ความคิดดีมากครับ — แทนที่จะสร้างใหม่ซ้ำซ้อน ควรดึงใบเสร็จที่บันทึกไว้ใน documents table มาเปิดในหน้าเอกสาร ซึ่งมี A4 renderer พร้อมแล้ว
+
+แนวทาง:
+
+หลังขายสำเร็จ → แสดง modal ยืนยัน + ลิงก์ documents.html?id=RECEIPT_ID
+documents.html ตรวจ URL แล้วโหลดใบเสร็จนั้นโดยตรง
+ลบ A4 code ซ้ำซ้อนออกจาก index.html ทั้งหมด
+
+Ran 3 commands, read a file
+Ran 3 commands, read a file
+อัปโหลดทั้ง 2 ไฟล์ครับ สรุปสิ่งที่เปลี่ยน:
+
+index.html — หลังยืนยันการขาย:
+
+ลบ A4 renderer, bahtText, fmtDateTH ออกทั้งหมด (ไม่ต้องซ้ำซ้อน)
+แสดง modal เรียบง่าย: ✅ + ยอดสุทธิ + เงินทอน
+มีปุ่ม 📄 ดูและพิมพ์ใบเสร็จ → เปิด documents.html?id=RECEIPT_ID
+documents.html — ตรวจ URL parameter ?id=:
+
+ถ้ามี → โหลดใบเสร็จนั้นจากฐานข้อมูลและแสดง A4 ทันที พร้อมพิมพ์ได้
+ถ้าไม่มี → เปิดหน้าเอกสารว่างตามปกติ
+
+Index
+Code · HTML 
+
+Documents
+Code · HTML 
+1783249076228_image.png
+โอเคแล้ว แต่ในหน้า pos เมื่อยืนยันการขาย และกดปุ่มดูและพิมพ์ใบเสร็จ ต้องการให้ขึ้นหน้าพิมพ์เอกสารเลย ไม่ต้องสลับไปหน้าเอกสาร (เปลี่ยนข้อความบนปุ่มให้เหลือแค่พิมพ์ใบเสร็จด้วย)
+
+
+Orchestrated popup window strategy for direct printing functionality
+Orchestrated popup window strategy for direct printing functionality
+แก้แล้วครับ
+
+การทำงานใหม่:
+
+ยืนยันการขาย → modal แสดงสรุป
+กด 🖨️ พิมพ์ใบเสร็จ → เปิด popup window ใหม่แสดงใบเสร็จ A4 และเรียก print dialog อัตโนมัติใน 0.6 วินาที
+หน้า POS เดิมยังอยู่ ไม่สลับหน้า
+หมายเหตุ: browser อาจ block popup ถ้าเพิ่ง เปิดเว็บใหม่ ให้กด "Allow pop-ups" สำหรับ site นี้ครั้งแรกครั้งเดียวครับ
+
+
+Index
+Code · HTML 
+
+Documents
+Code · HTML 
+1783306586465_image.png
+1783306682585_image.png
+เมื่อกดพิมพ์ใบเสร็จ เราไม่เปิดหน้าเอกสารขึ้นมาได้ไหม และลดความยาวของช่องกรอกตัวเลข ส่วนลด รับเงิน ให้สั้นลงและชิดไปทา
+
+เมื่อกดพิมพ์ใบเสร็จ เราไม่เปิดหน้าเอกสารขึ้นมาได้ไหม และลดความยาวของช่องกรอกตัวเลข ส่วนลด รับเงิน ให้สั้นลงและชิดไปทางด้านขวา (รองรับตัวเลขแค่ 7 หลักก็พอ)
+
+
+วางแผนปรับปรุงการพิมพ์และจัดรูปแบบช่องกรอกตัวเลข
+วางแผนปรับปรุงการพิมพ์และจัดรูปแบบช่องกรอกตัวเลข
+แก้ทั้ง 2 อย่างแล้วครับ
+
+🖨️ พิมพ์ใบเสร็จ — เปิด popup window แสดงแค่ A4 ใบเสร็จ ไม่มี header/form/menu ของหน้าเอกสาร แล้ว print dialog ขึ้นทันที
+
+ช่องตัวเลข — ส่วนลด / รับเงิน / VAT ปรับเป็นกว้างคงที่ (100–130px) ชิดไปทางขวา รองรับตัวเลข 7 หลัก
+
+
+Index
+Code · HTML 
+
+Documents
+Code · HTML 
+
+
+
+
+
+
+Claude is AI and can make mistakes. Please double-check responses.
+
+
+Documents · HTML
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -20,7 +118,7 @@
 }
 *{box-sizing:border-box}html,body{margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-size:14px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-
+ 
 /* ── Header (same as POS) ── */
 .topbar{position:sticky;top:0;z-index:30;background:var(--primary-dark);color:#fff;
   display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:7px 14px;
@@ -50,19 +148,19 @@ body{background:var(--bg);color:var(--text);font-size:14px;-webkit-print-color-a
 .home-btn:hover{background:rgba(255,255,255,.2)}
 .db-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:3px}
 .db-dot.off{background:#f87171}
-
+ 
 /* ── Layout ── */
 .workspace{display:grid;grid-template-columns:1fr 1fr}
 @media(max-width:1100px){.workspace{grid-template-columns:1fr}}
 .form{padding:14px 14px 80px;max-height:calc(100vh - 50px);overflow:auto;position:sticky;top:50px;background:var(--bg)}
 @media(max-width:1100px){.form{position:static;max-height:none}}
-
+ 
 /* ── Cards ── */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px}
 .card h3{margin:0 0 10px;font-size:12px;font-weight:700;color:var(--primary-dark);
   text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:7px}
 .card h3::before{content:"";width:4px;height:13px;border-radius:3px;background:var(--primary)}
-
+ 
 /* ── Grid/form ── */
 .grid{display:grid;gap:8px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}
 @media(max-width:500px){.g2,.g3{grid-template-columns:1fr}}
@@ -72,7 +170,7 @@ body{background:var(--bg);color:var(--text);font-size:14px;-webkit-print-color-a
   border-radius:6px;padding:7px 9px;font-size:13px;color:var(--text);width:100%;font-family:inherit}
 .fld textarea{resize:vertical;min-height:52px;line-height:1.5}
 .fld input:focus,.fld textarea:focus,.fld select:focus{outline:2px solid var(--primary);border-color:transparent}
-
+ 
 /* ── Item cards ── */
 .item-card{border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:8px;background:var(--card);position:relative}
 .item-num{position:absolute;top:-8px;left:-7px;width:21px;height:21px;border-radius:50%;
@@ -85,7 +183,7 @@ body{background:var(--bg);color:var(--text);font-size:14px;-webkit-print-color-a
 .add-line{width:100%;border:1.5px dashed var(--primary);color:var(--primary);background:var(--card);
   border-radius:8px;padding:8px;font-weight:700;cursor:pointer;font-size:12.5px;font-family:inherit}
 .add-line:hover{background:#eff6ff}
-
+ 
 /* ── Autocomplete ── */
 .ac-wrap{position:relative}
 .ac-list{position:absolute;top:calc(100% - 1px);left:0;right:0;z-index:50;background:var(--card);
@@ -101,13 +199,13 @@ body{background:var(--bg);color:var(--text);font-size:14px;-webkit-print-color-a
 .chip{border:1px solid var(--border);background:var(--card);border-radius:20px;padding:5px 10px;
   font-size:12px;cursor:pointer;font-weight:600;color:var(--muted)}
 .chip.on{background:var(--primary);border-color:var(--primary);color:#fff}
-
+ 
 /* ── Preview ── */
 .preview-wrap{padding:16px;display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--bg)}
 .zoombar{align-self:stretch;display:flex;align-items:center;gap:8px;justify-content:flex-end;color:var(--muted);font-size:12px}
 .zoombar select{border:1px solid var(--border);border-radius:6px;padding:4px 7px;background:var(--card);font-size:12px;font-family:inherit}
 .scaler{transform-origin:top center}
-
+ 
 /* ─── A4 Sheet (Sarabun font, keep doc styling) ─── */
 .sheet{width:210mm;min-height:297mm;background:#fff;box-shadow:var(--shadow);
   padding:12mm 11mm 10mm;color:var(--ink);position:relative;display:flex;flex-direction:column;
@@ -163,7 +261,7 @@ table.items tr.grow td{border-top:none}
 .sign .line{border-bottom:1px dotted var(--ink-soft);height:38px;margin-bottom:5px}
 .sign .role{color:#6c7c8e;font-weight:700}.sign .name{font-weight:700;color:var(--ink);margin-top:2px}
 .stamp-area{font-size:11px;color:var(--ink-soft);align-self:flex-end;margin-right:auto;padding-left:2px}
-
+ 
 /* ── Modals ── */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:60;
   align-items:flex-start;justify-content:center;padding:36px 14px;overflow:auto}
@@ -243,7 +341,7 @@ table.items tr.grow td{border-top:none}
     <span><span class="db-dot" id="dbDot"></span><span id="dbStatus" style="font-size:11px;opacity:.7">กำลังเชื่อมต่อ...</span></span>
   </div>
 </div>
-
+ 
 <div class="workspace">
   <div class="form">
     <div class="card">
@@ -261,7 +359,7 @@ table.items tr.grow td{border-top:none}
         <div class="fld"><label>ผู้ติดต่อ / โทร</label><input id="buyerContact"></div>
       </div>
     </div>
-
+ 
     <div class="card">
       <h3>รายละเอียดเอกสาร</h3>
       <div class="grid g2">
@@ -283,7 +381,7 @@ table.items tr.grow td{border-top:none}
         </div>
       </div>
     </div>
-
+ 
     <div id="receiptCard" class="card" style="display:none">
       <h3>การรับชำระ</h3>
       <div class="grid g2">
@@ -293,13 +391,13 @@ table.items tr.grow td{border-top:none}
         <div class="fld"><label>เลขอ้างอิง (เช็ค/สลิป)</label><input id="rcpRef"></div>
       </div>
     </div>
-
+ 
     <div class="card">
       <h3>รายการสินค้า / บริการ</h3>
       <div id="itemsEditor"></div>
       <button class="add-line" id="addItem">+ เพิ่มรายการ</button>
     </div>
-
+ 
     <div class="card">
       <h3>ส่วนลด &amp; ภาษีมูลค่าเพิ่ม</h3>
       <div class="grid g3">
@@ -317,13 +415,13 @@ table.items tr.grow td{border-top:none}
         </select>
       </div>
     </div>
-
+ 
     <div class="card">
       <h3>เงื่อนไข &amp; หมายเหตุ</h3>
       <div class="fld"><label>หมายเหตุ / เงื่อนไขพิเศษ</label><textarea id="docNote" rows="3"></textarea></div>
     </div>
   </div>
-
+ 
   <div class="preview-wrap">
     <div class="zoombar">
       <span>ตัวอย่าง A4</span>
@@ -332,7 +430,7 @@ table.items tr.grow td{border-top:none}
     <div class="scaler" id="scaler"><div class="sheet" id="sheet"></div></div>
   </div>
 </div>
-
+ 
 <!-- History Modal -->
 <div class="overlay" id="histOverlay">
   <div class="modal">
@@ -351,7 +449,7 @@ table.items tr.grow td{border-top:none}
     </div>
   </div>
 </div>
-
+ 
 <!-- Convert Modal -->
 <div class="overlay" id="convOverlay">
   <div class="modal" style="max-width:520px">
@@ -359,7 +457,7 @@ table.items tr.grow td{border-top:none}
     <div class="mbody" id="convBody"></div>
   </div>
 </div>
-
+ 
 <!-- Settings Modal -->
 <div class="overlay" id="setOverlay">
   <div class="modal" style="max-width:620px">
@@ -367,9 +465,9 @@ table.items tr.grow td{border-top:none}
     <div class="mbody" id="setBody"></div>
   </div>
 </div>
-
+ 
 <div class="toast" id="toast"></div>
-
+ 
 <!-- Supabase module loader -->
 <script type="module">
 (async()=>{
@@ -398,7 +496,7 @@ table.items tr.grow td{border-top:none}
   else window._sbLoaded=true;
 })();
 </script>
-
+ 
 <script>
 'use strict';
 const DOC_TYPES={
@@ -409,7 +507,7 @@ const DOC_TYPES={
   t:{th:'ใบกำกับภาษี',en:'TAX INVOICE',cls:'ht',hasCopy:true,hasRcp:false},
 };
 const CONVERT_MAP={q:['d','i','r','t'],d:['r','t'],i:['r','t'],r:[],t:['r']};
-
+ 
 let seller={
   name:'ห้างหุ้นส่วนจำกัด ที.โอ.พี.กลาส',nameEn:'T.O.P. GLASS LIMITED PARTNERSHIP',
   taxId:'',branch:'สำนักงานใหญ่',address:'',phone:'',fax:'',email:'',logo:'',
@@ -423,7 +521,7 @@ let customers=[], products=[];
 let currentHistId=null;
 let histTypeFilter='all';
 let saving=false;
-
+ 
 /* ── utils ─────────────────────────────────── */
 const $=id=>document.getElementById(id);
 function num(v){return parseFloat(String(v||'').replace(/,/g,''))||0;}
@@ -431,14 +529,14 @@ function money(n){return n.toLocaleString('th-TH',{minimumFractionDigits:2,maxim
 function round2(v){return Math.round(v*100)/100;}
 function todayISO(){return new Date().toISOString().slice(0,10);}
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-
+ 
 function toast(msg,dur=2500){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),dur);}
 function setDB(ok){
   const dot=$('dbDot'),st=$('dbStatus');
   dot.className='db-dot'+(ok?'':' off');
   st.textContent=ok?'เชื่อมต่อแล้ว':'ออฟไลน์ (localStorage)';
 }
-
+ 
 /* ── Thai number ────────────────────────────── */
 const TH_ONES=['','หนึ่ง','สอง','สาม','สี่','ห้า','หก','เจ็ด','แปด','เก้า'];
 const TH_TENS=['','สิบ','ยี่สิบ','สามสิบ','สี่สิบ','ห้าสิบ','หกสิบ','เจ็ดสิบ','แปดสิบ','เก้าสิบ'];
@@ -460,28 +558,28 @@ function bahtText(v){
   else r+='ถ้วน';
   return r;
 }
-
+ 
 function fmtDate(iso){
   if(!iso)return'';
   const d=new Date(iso+'T00:00:00');
   const M=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
   return`${d.getDate()} ${M[d.getMonth()]} ${d.getFullYear()+543}`;
 }
-
+ 
 /* ── localStorage seller/numbering ─────────── */
 function saveSeller(){try{localStorage.setItem('topg_seller',JSON.stringify(seller));}catch(e){}}
 function loadSeller(){try{const s=localStorage.getItem('topg_seller');if(s)seller=Object.assign(seller,JSON.parse(s));}catch(e){}}
-
+ 
 function defaultNum(){const n={};Object.keys(DOC_TYPES).forEach(k=>{n[k]={prefix:k.toUpperCase(),next:1,pad:4};});return n;}
 function numPreview(type){
   const n=numbering[type]||defaultNum()[type];
   const yr=new Date().getFullYear()+543;
   return`${n.prefix}-${yr}-${String(n.next||1).padStart(n.pad,'0')}`;
 }
-
+ 
 /* ── Supabase helpers ───────────────────────── */
 const sb=()=>window._sb;
-
+ 
 async function loadNumberingFromDB(){
   if(!sb()||!window._sbNumbering)return;
   window._sbNumbering.forEach(row=>{
@@ -492,13 +590,13 @@ async function loadNumberingFromDB(){
   if(numEl&&!numEl.value||numEl.value===numPreview(docType))
     numEl.value=numPreview(docType);
 }
-
+ 
 async function saveNumberingToDB(){
   if(!sb())return;
   const rows=Object.entries(numbering).map(([k,v])=>({doc_type:k,prefix:v.prefix,next_num:v.next,pad:v.pad,updated_at:new Date().toISOString()}));
   await sb().from('doc_numbering').upsert(rows,{onConflict:'doc_type'});
 }
-
+ 
 async function getNextNumber(type){
   if(sb()){
     const{data,error}=await sb().rpc('get_next_doc_number',{p_type:type});
@@ -515,7 +613,7 @@ async function getNextNumber(type){
   if(numbering[type])numbering[type].next++;
   return result;
 }
-
+ 
 /* ── Document save/load ─────────────────────── */
 function formSnapshot(){
   return{
@@ -527,7 +625,7 @@ function formSnapshot(){
     copyTag,items:items.map(i=>({...i})),
   };
 }
-
+ 
 async function saveDoc(andPrint=false){
   if(saving)return;saving=true;
   const btn=$('btnSave');const pBtn=$('btnPrint');
@@ -549,7 +647,7 @@ async function saveDoc(andPrint=false){
       data:formSnapshot(),updated_at:new Date().toISOString(),
     };
     if(currentHistId)payload.id=currentHistId;
-
+ 
     if(sb()){
       const{data,error}=await sb().from('documents').upsert(payload,{onConflict:'id'}).select().single();
       if(error)throw error;
@@ -573,7 +671,7 @@ async function saveDoc(andPrint=false){
   }catch(e){toast('บันทึกไม่สำเร็จ: '+e.message,3500);}
   finally{saving=false;btn.disabled=false;btn.innerHTML='💾 บันทึก';pBtn.disabled=false;}
 }
-
+ 
 async function deleteDoc(id){
   if(!confirm('ลบเอกสารนี้ออกจากฐานข้อมูล?'))return;
   if(sb()){const{error}=await sb().from('documents').delete().eq('id',id);if(error){toast('ลบไม่สำเร็จ: '+error.message,3500);return;}}
@@ -581,7 +679,7 @@ async function deleteDoc(id){
   if(!sb()){try{localStorage.setItem('topg_hist',JSON.stringify(historyList));}catch(e){}}
   updateHistCount();renderHistory($('histSearch').value);toast('ลบแล้ว');
 }
-
+ 
 /* ── Calc ───────────────────────────────────── */
 function calcTotals(){
   const subRaw=items.reduce((s,it)=>s+round2(num(it.qty)*num(it.price)),0);
@@ -594,7 +692,7 @@ function calcTotals(){
   else{grand=base;}
   return{subRaw,disc,base,vat,grand,vm};
 }
-
+ 
 /* ── Items editor ───────────────────────────── */
 function renderItems(){
   const div=$('itemsEditor');
@@ -639,7 +737,7 @@ function renderItems(){
     });
   });
 }
-
+ 
 /* ── Customer AC ────────────────────────────── */
 function setupCustAc(){
   const inp=$('buyerName'),list=$('custAcList');
@@ -657,7 +755,7 @@ function setupCustAc(){
     list.classList.remove('show');render();
   });
 }
-
+ 
 /* ── A4 Render ──────────────────────────────── */
 function render(){
   const t=calcTotals(),dt=DOC_TYPES[docType];
@@ -675,7 +773,7 @@ function render(){
   const rcpMethod=$('rcpMethod')?.value||'';
   const rcpRef=$('rcpRef')?.value||'';
   const vatLabel=t.vm==='exclude'?`VAT ${$('vatRate')?.value||7}%`:t.vm==='include'?`VAT ${$('vatRate')?.value||7}% (รวมแล้ว)`:'';
-
+ 
   const itemRows=items.map((it,i)=>{
     if(!it.detail&&!num(it.price))return'';
     const ls=(it.detail||'').split('\n');const title=ls[0]||'';const spec=ls.slice(1).join('\n');
@@ -685,7 +783,7 @@ function render(){
       <td class="c-qty">${money(num(it.qty))}</td><td>${esc(it.unit||'')}</td>
       <td class="c-price">${money(num(it.price))}</td><td class="c-total">${money(amt)}</td></tr>`;
   }).join('');
-
+ 
   $('sheet').innerHTML=`
   <div class="doc-head">
     <div class="head-left">
@@ -763,7 +861,7 @@ function render(){
     grow.style.height=Math.max(24,sh-used)+'px';
   },0);
 }
-
+ 
 /* ── Doc type ───────────────────────────────── */
 function setDocType(type){
   docType=type;const dt=DOC_TYPES[type];
@@ -774,16 +872,16 @@ function setDocType(type){
   if(numEl) numEl.value=numPreview(type);
   render();
 }
-
+ 
 function buildDocTypeSelect(){
   const sel=$('docType');const prev=sel.value||docType;
   sel.innerHTML=Object.entries(DOC_TYPES).map(([k,v])=>`<option value="${k}">${v.th}</option>`).join('');
   sel.value=prev;
 }
-
+ 
 /* ── History ────────────────────────────────── */
 function updateHistCount(){const el=$('histCount');if(!el)return;el.textContent=historyList.length;el.style.display=historyList.length?'':'none';}
-
+ 
 function renderHistory(q=''){
   let list=historyList;
   if(histTypeFilter!=='all')list=list.filter(h=>h.doc_type===histTypeFilter);
@@ -807,7 +905,7 @@ function renderHistory(q=''){
   el.querySelectorAll('[data-hconv]').forEach(b=>b.onclick=()=>openConvert(b.dataset.hconv));
   el.querySelectorAll('[data-hdel]').forEach(b=>b.onclick=()=>deleteDoc(b.dataset.hdel));
 }
-
+ 
 function loadFromHistory(entry){
   currentHistId=entry.id;docType=entry.doc_type;
   buildDocTypeSelect();$('docType').value=docType;
@@ -824,7 +922,7 @@ function loadFromHistory(entry){
   document.querySelectorAll('[data-copy]').forEach(c=>c.classList.toggle('on',c.dataset.copy===copyTag));
   setDocType(docType);renderItems();closeModal('histOverlay');render();
 }
-
+ 
 function newDoc(confirm_=true){
   if(confirm_&&!confirm('เริ่มเอกสารใหม่?'))return;
   currentHistId=null;items=[{qty:'1',unit:'',detail:'',price:''}];
@@ -837,7 +935,7 @@ function newDoc(confirm_=true){
   copyTag='ต้นฉบับ';
   renderItems();render();
 }
-
+ 
 /* ── Convert ────────────────────────────────── */
 function openConvert(id){
   const entry=historyList.find(h=>h.id===id);if(!entry)return;
@@ -855,7 +953,7 @@ function openConvert(id){
   });
   closeModal('histOverlay');openModal('convOverlay');
 }
-
+ 
 /* ── Settings ───────────────────────────────── */
 function renderSettings(){
   $('setBody').innerHTML=`
@@ -900,7 +998,7 @@ function renderSettings(){
     <button class="btn primary" id="saveSet" style="background:var(--brand);color:#fff;border-color:var(--brand)">💾 บันทึกการตั้งค่า</button>
     <span id="setMsg" style="font-size:12.5px;color:var(--ok)"></span>
   </div>`;
-
+ 
   $('setBody').querySelectorAll('.nf').forEach(inp=>{
     inp.oninput=()=>{
       const t=inp.dataset.t,f=inp.dataset.f;
@@ -924,7 +1022,7 @@ function renderSettings(){
     closeModal('setOverlay');render();toast('บันทึกการตั้งค่าแล้ว');
   };
 }
-
+ 
 /* ── Modals ─────────────────────────────────── */
 function openModal(id){$(id).classList.add('show');}
 function closeModal(id){$(id).classList.remove('show');}
@@ -932,11 +1030,11 @@ document.addEventListener('click',e=>{
   const c=e.target.dataset.close;if(c)closeModal(c);
   if(e.target.classList.contains('overlay'))closeModal(e.target.id);
 });
-
+ 
 /* ── Zoom ───────────────────────────────────── */
 function applyZoom(){const z=parseFloat($('zoom').value)||0.75;$('scaler').style.transform=`scale(${z})`;$('scaler').style.marginBottom=`-${(1-z)*297*3.78}px`;}
 $('zoom').onchange=applyZoom;
-
+ 
 /* ── Init ───────────────────────────────────── */
 async function init(){
   loadSeller();
@@ -955,7 +1053,7 @@ async function init(){
     // localStorage fallback
     try{const h=localStorage.getItem('topg_hist');if(h)historyList=JSON.parse(h);}catch(e){}
   }
-
+ 
   buildDocTypeSelect();
   $('docType').onchange=()=>setDocType($('docType').value);
   $('addItem').onclick=()=>{items.push({qty:'1',unit:'',detail:'',price:''});renderItems();};
@@ -971,27 +1069,38 @@ async function init(){
     };
   });
   $('btnSettings').onclick=()=>{renderSettings();openModal('setOverlay');};
-
+ 
   ['discType','discValue','vatRate','vatMode','rcpMethod','rcpRef',
    'buyerAddr','buyerBranch','buyerTaxId','buyerContact',
    'docDate','docRef','docValid','docNote'].forEach(id=>{const el=$(id);if(el)el.oninput=render;});
-
+ 
   document.querySelectorAll('[data-copy]').forEach(ch=>{
     ch.onclick=()=>{
       document.querySelectorAll('[data-copy]').forEach(c=>c.classList.remove('on'));
       ch.classList.add('on');copyTag=ch.dataset.copy;render();
     };
   });
-
+ 
   $('docNumber').oninput=render;
   setupCustAc();
   updateHistCount();applyZoom();
-
+ 
   // โหลดเอกสารจาก URL parameter ?id=...
   const _params=new URLSearchParams(window.location.search);
   const _urlId=_params.get('id');
   const _autoPrint=_params.get('print')==='1';
-  function _afterLoad(){if(_autoPrint)setTimeout(()=>window.print(),600);}
+  const _minimal=_params.get('minimal')==='1';
+  if(_minimal){
+    // ซ่อน UI แสดงเฉพาะ A4 sheet
+    const _tb=document.querySelector('.topbar');if(_tb)_tb.style.display='none';
+    const _fm=document.querySelector('.form');if(_fm)_fm.style.display='none';
+    const _zb=document.querySelector('.zoombar');if(_zb)_zb.style.display='none';
+    const _ws=document.querySelector('.workspace');if(_ws){_ws.style.display='block';_ws.style.padding='0';}
+    const _pw=document.querySelector('.preview-wrap');if(_pw)_pw.style.padding='8px';
+    const _sc=document.querySelector('.scaler');if(_sc)_sc.style.transform='none';
+    document.body.style.background='#fff';
+  }
+  function _afterLoad(){if(_autoPrint)setTimeout(()=>window.print(),500);}
   if(_urlId){
     const _entry=historyList.find(h=>h.id===_urlId);
     if(_entry){loadFromHistory(_entry);_afterLoad();}
@@ -1006,10 +1115,12 @@ async function init(){
     setDocType('q');newDoc(false);renderItems();
   }
 }
-
+ 
 window._initDocs=init;
 if(window._sbLoaded||document.readyState==='complete')init();
 else document.addEventListener('DOMContentLoaded',()=>{if(!window._sbLoaded)setTimeout(init,1500);});
 </script>
 </body>
 </html>
+
+
