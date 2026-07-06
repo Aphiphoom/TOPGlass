@@ -96,14 +96,17 @@ tr:hover td{background:#f8fafc;}
 .totals .line{display:flex;justify-content:space-between;padding:2px 0;}
 .totals .grand{font-size:18px;font-weight:800;color:var(--primary-dark);border-top:2px solid var(--border);margin-top:5px;padding-top:6px;}
 .disc-row{display:flex;gap:6px;align-items:center;margin:5px 0;flex-shrink:0;}
-.disc-row>label{white-space:nowrap;font-size:12px;font-weight:600;color:var(--muted);}
-.disc-row input{flex:1;} .disc-row select{flex:0 0 56px;}
+.disc-row>label{white-space:nowrap;font-size:12px;font-weight:600;color:var(--muted);flex:none;}
+.disc-row .disc-spacer{flex:1;}
+.disc-row input{width:100px;max-width:100px;text-align:right;flex:none;}
+.disc-row select{flex:0 0 56px;}
 .pay-method{display:flex;gap:6px;margin:5px 0;flex-shrink:0;}
 .pay-method button{flex:1;padding:7px;border:2px solid var(--border);background:#fff;border-radius:8px;cursor:pointer;font-weight:600;font-family:inherit;font-size:12.5px;color:var(--muted);}
 .pay-method button.active{border-color:var(--primary);background:#eff6ff;color:var(--primary);}
 .paid-row{display:flex;gap:6px;align-items:center;flex-shrink:0;margin-bottom:5px;}
-.paid-row label{white-space:nowrap;font-size:12px;font-weight:600;color:var(--muted);}
-.paid-row input{flex:1;font-size:16px;text-align:right;font-weight:700;}
+.paid-row label{white-space:nowrap;font-size:12px;font-weight:600;color:var(--muted);flex:none;}
+.paid-row .paid-spacer{flex:1;}
+.paid-row input{width:130px;max-width:130px;text-align:right;flex:none;font-size:15px;font-weight:700;}
 .checkout-row{display:flex;gap:6px;flex-shrink:0;}
 .credit-info{font-size:12px;background:#fef9c3;border:1px solid #fde68a;border-radius:6px;padding:5px 8px;margin-bottom:5px;color:#854d0e;flex-shrink:0;}
 .debt-result{font-size:12px;border-radius:6px;padding:5px 8px;margin-bottom:5px;flex-shrink:0;}
@@ -388,12 +391,13 @@ function renderPOS(m){
       </div>
       <div class="disc-row">
         <label>ส่วนลด</label>
+        <span class="disc-spacer"></span>
         <input id="discInp" type="text" inputmode="decimal" value="${discAmt||''}" placeholder="0">
         <select id="discTypeSel"><option value="amount" ${discType==='amount'?'selected':''}>บาท</option><option value="percent" ${discType==='percent'?'selected':''}> %</option></select>
       </div>
       <div class="disc-row">
         <label>VAT</label>
-        <select id="vatModeSel" style="flex:1;font-size:13px;">
+        <select id="vatModeSel" style="width:190px;flex:none;font-size:13px;margin-left:auto;">
           <option value="none" ${vatMode==='none'?'selected':''}>ไม่มี VAT</option>
           <option value="exclude" ${vatMode==='exclude'?'selected':''}>คิด VAT 7% เพิ่ม</option>
           <option value="include" ${vatMode==='include'?'selected':''}>ราคารวม VAT 7% แล้ว</option>
@@ -412,6 +416,7 @@ function renderPOS(m){
       <div id="creditInfo"></div>
       <div class="paid-row">
         <label>รับเงิน (฿)</label>
+        <span class="paid-spacer"></span>
         <input id="paidInp" type="text" inputmode="decimal" value="${esc(paidStr)}" placeholder="0">
       </div>
       <div id="debtResult"></div>
@@ -662,9 +667,9 @@ function showReceipt(sale,items,_vatInfo){
   bg.querySelector('#closeR').onclick=()=>bg.remove();
   bg.querySelector('#openRcp').onclick=()=>{
     const url=sale.receipt_doc_id
-      ?`documents.html?id=${sale.receipt_doc_id}&print=1`
-      :'documents.html';
-    window.open(url,'_blank','width=960,height=1100,menubar=no,toolbar=no,location=no,status=no');
+      ?`documents.html?id=${sale.receipt_doc_id}&print=1&minimal=1`
+      :'documents.html?print=1&minimal=1';
+    window.open(url,'_blank','width=820,height=1100,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes');
     bg.remove();
   };
 }
